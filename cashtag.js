@@ -173,15 +173,19 @@ $(document).ready(function () {
         var description = $($.parseHTML(dataDesc)).text()
         var url = data.post.post_url
         var avatar = data.profile_pic_url
-        var likes = data.post.likes
-        var photo = data.post.photo_link_480x480
+        if (data.post.likes) {
+           var likes = data.post.likes + ' likes'
+        } else {
+          var likes = '0 likes'
+        }
+        var photo = data.post.display_url
         var photo2 = data.post.photo_link_640x640
         var username = data.username
         $('#ranking-tag').text(tag)
         $('#ranking-rank').text(rank)
         $('#ranking-winners').text(winners)
         $('#ranking-prize').text('$' + prize)
-        $('.ranking__post').append('<a class="userpost" href="' + url + '" target="_blank"><div class="userpost__top"><div class="userpost__avatar" style="background-image: url(' + photo + ');"></div><div class="userpost__name" style="font-weight: 700">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="userpost__icon" /></div><div class="userpost__image" style="background-image: url(' + photo + '), url(' + photo2 + ');background-size: cover;background-position: center;"></div><div class="userpost__bottom"><div class="userpost__likes" style="font-weight: 700"><div class="userpost__likes-count">' + likes + '</div><div class="userpost__likes-text">likes</div></div><div class="userpost__desc"><div class="userpost__desc-name" style="font-weight: 700">' + username + '</div><div class="userpost__desc-text">' + description + '</div></div></div></a>');
+        $('.ranking__post').append('<a class="userpost" href="' + url + '" target="_blank"><div class="userpost__top"><div class="userpost__avatar" style="background-image: url(' + photo + ');"></div><div class="userpost__name" style="font-weight: 700">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="userpost__icon" /></div><div class="userpost__image" style="background-image: url(' + photo + '), url(' + photo2 + ');background-size: cover;background-position: center;"></div><div class="userpost__bottom"><div class="userpost__likes" style="font-weight: 700"><div class="userpost__likes-count">' + likes + '</div></div><div class="userpost__desc"><div class="userpost__desc-name" style="font-weight: 700">' + username + '</div><div class="userpost__desc-text">' + description + '</div></div></div></a>');
         setTimeout(function(){
           $('.ranking__loader').hide()
           $('.ranking__wrapper').show()
@@ -220,8 +224,12 @@ $(document).ready(function () {
             function showTopPosts () {
               $.each(firstTopResult, function (i, e) {
                 var description = $($.parseHTML(firstTopResult[i].description)).text()
-                var likes = firstTopResult[i].likes
-                var photo = firstTopResult[i].photo_link_480x480
+                if (firstTopResult[i].likes) {
+                   var likes = firstTopResult[i].likes + ' likes'
+                } else {
+                  var likes = '0 likes'
+                }
+                var photo = firstTopResult[i].display_url
                 var photo2 = firstTopResult[i].photo_link_640x640
                 var url = firstTopResult[i].post_url
                 if (firstTopResult[i].username) {
@@ -234,7 +242,7 @@ $(document).ready(function () {
                 } else {
                   var avatar = 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
-                $('#first-tag-top').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div><div class="instacard__likes-text">likes</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
+                $('#first-tag-top').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
               })
             }
             showTopPosts()
@@ -271,8 +279,12 @@ $(document).ready(function () {
             function showRecentPosts () {
               $.each(firstRecentResult, function (i, e) {
                 var description = $($.parseHTML(firstRecentResult[i].description)).text()
-                var likes = firstRecentResult[i].likes
-                var photo = firstRecentResult[i].photo_link_480x480
+                if (firstRecentResult[i].likes) {
+                   var likes = firstRecentResult[i].likes + ' likes'
+                } else {
+                  var likes = '0 likes'
+                }
+                var photo = firstRecentResult[i].display_url
                 var photo2 = firstRecentResult[i].photo_link_640x640
                 var url = firstRecentResult[i].post_url
                 if (firstRecentResult[i].username) {
@@ -285,7 +297,7 @@ $(document).ready(function () {
                 } else {
                   var avatar = 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
-                $('#first-tag-recent').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div><div class="instacard__likes-text">likes</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
+                $('#first-tag-recent').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
               })
             }
             showRecentPosts()
@@ -325,8 +337,12 @@ $(document).ready(function () {
             function showTopPosts () {
               $.each(secondTopResult, function (i, e) {
                 var description = $($.parseHTML(secondTopResult[i].description)).text()
-                var likes = secondTopResult[i].likes
-                var photo = secondTopResult[i].photo_link_480x480
+                if (secondTopResult[i].likes) {
+                   var likes = secondTopResult[i].likes + ' likes'
+                } else {
+                  var likes = '0 likes'
+                }
+                var photo = secondTopResult[i].display_url
                 var photo2 = secondTopResult[i].photo_link_640x640
                 var url = secondTopResult[i].post_url
                 if (secondTopResult[i].username) {
@@ -339,7 +355,7 @@ $(document).ready(function () {
                 } else {
                   var avatar = 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
-                $('#second-tag-top').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div><div class="instacard__likes-text">likes</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
+                $('#second-tag-top').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
               })
             }
             showTopPosts()
@@ -376,8 +392,12 @@ $(document).ready(function () {
             function showRecentPosts () {
               $.each(secondRecentResult, function (i, e) {
                 var description = $($.parseHTML(secondRecentResult[i].description)).text()
-                var likes = secondRecentResult[i].likes
-                var photo = secondRecentResult[i].photo_link_480x480
+                if (secondRecentResult[i].likes) {
+                   var likes = secondRecentResult[i].likes + ' likes'
+                } else {
+                  var likes = '0 likes'
+                }
+                var photo = secondRecentResult[i].display_url
                 var photo2 = secondRecentResult[i].photo_link_640x640
                 var url = secondRecentResult[i].post_url
                 if (secondRecentResult[i].username) {
@@ -390,7 +410,7 @@ $(document).ready(function () {
                 } else {
                   var avatar = 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
-                $('#second-tag-recent').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div><div class="instacard__likes-text">likes</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
+                $('#second-tag-recent').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
               })
             }
             showRecentPosts()
@@ -431,8 +451,12 @@ $(document).ready(function () {
             function showTopPosts () {
               $.each(thirdTopResult, function (i, e) {
                 var description = $($.parseHTML(thirdTopResult[i].description)).text()
-                var likes = thirdTopResult[i].likes
-                var photo = thirdTopResult[i].photo_link_480x480
+                if (thirdTopResult[i].likes) {
+                   var likes = thirdTopResult[i].likes + ' likes'
+                } else {
+                  var likes = '0 likes'
+                }
+                var photo = thirdTopResult[i].display_url
                 var photo2 = thirdTopResult[i].photo_link_640x640
                 var url = thirdTopResult[i].post_url
                 if (thirdTopResult[i].username) {
@@ -445,7 +469,7 @@ $(document).ready(function () {
                 } else {
                   var avatar = 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
-                $('#third-tag-top').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div><div class="instacard__likes-text">likes</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
+                $('#third-tag-top').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
               })
             }
             showTopPosts()
@@ -482,8 +506,12 @@ $(document).ready(function () {
             function showRecentPosts () {
               $.each(thirdRecentResult, function (i, e) {
                 var description = $($.parseHTML(thirdRecentResult[i].description)).text()
-                var likes = thirdRecentResult[i].likes
-                var photo = thirdRecentResult[i].photo_link_480x480
+                if (thirdRecentResult[i].likes) {
+                   var likes = thirdRecentResult[i].likes + ' likes'
+                } else {
+                  var likes = '0 likes'
+                }
+                var photo = thirdRecentResult[i].display_url
                 var photo2 = thirdRecentResult[i].photo_link_640x640
                 var url = thirdRecentResult[i].post_url
                 if (thirdRecentResult[i].username) {
@@ -496,7 +524,7 @@ $(document).ready(function () {
                 } else {
                   var avatar = 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
-                $('#third-tag-recent').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div><div class="instacard__likes-text">likes</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
+                $('#third-tag-recent').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
               })
             }
             showRecentPosts()
