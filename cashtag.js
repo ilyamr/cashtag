@@ -1,21 +1,21 @@
 $(document).ready(function () {
-  // if ($('body.register').length > 0) {
-  //   $('#register-wrapper').show()
-  //   $('#confirm-wrapper').hide()
-  //   $('#success-wrapper').hide()
+  if ($('body.register').length > 0) {
+    $('#register-wrapper').show()
+    $('#confirm-wrapper').hide()
+    $('#success-wrapper').hide()
 
-  //   $('#register-update').click(function () {
-  //     $('#register-wrapper').show()
-  //     $('#confirm-wrapper').hide()
-  //     $('#success-wrapper').hide()
-  //   })
+    $('#register-update').click(function () {
+      $('#register-wrapper').show()
+      $('#confirm-wrapper').hide()
+      $('#success-wrapper').hide()
+    })
 
-  //   if (location.search !== '') {
-  //     var nameVal = location.search
-  //     nameVal = nameVal.substring(nameVal.indexOf('=')+1)
-  //     $('#register-name-input').val(nameVal)
-  //   }
-  // }
+    if (location.search !== '') {
+      var nameVal = location.search
+      nameVal = nameVal.substring(nameVal.indexOf('=')+1)
+      $('#register-name-input').val(nameVal)
+    }
+  }
 })
 
 var Webflow = Webflow || []
@@ -66,13 +66,19 @@ Webflow.push(function () {
 
   $('#wf-form-Register').submit(function (evt) {
     evt.preventDefault()
-    $('#register-submit').val('Please wait...')
-    $('#register-error').text('').hide()
     var name = $('#register-name-input').val()
     var phone = $('#register-phone-input').val()
+    var age = $('#register-age').val()
+    var zip = $('#register-zip').val()
+    var firstName = $('#register-firstname').val()
+    var lastName = $('#register-lastname').val()
     var sendData = {
       phone: phone,
-      username: name
+      username: name,
+      age: age,
+      zip: zip,
+      firstName: firstName,
+      lastName: lastName
     }
     sendData = JSON.stringify(sendData)
     $.ajax({
@@ -117,7 +123,9 @@ Webflow.push(function () {
           document.cookie = "Authorization=JWT " + result.data.access_token;
           $('#register-wrapper').hide()
           $('#confirm-wrapper').hide()
-          $('#registered-name').text(name)
+
+          $('.register__enter>span').text(result.data.user.phone)
+          $('#registered-name').text(result.data.user.firstName)
           $('#success-wrapper').show()
           $('#confirm-submit').val('Confirm')
         } else if (result.data && !result.data.user.verified) {
@@ -138,9 +146,17 @@ Webflow.push(function () {
     $('#confirm-error').text('').hide()
     var name = $('#register-name-input').val()
     var phone = $('#register-phone-input').val()
+    var age = $('#register-age').val()
+    var zip = $('#register-zip').val()
+    var firstName = $('#register-firstname').val()
+    var lastName = $('#register-lastname').val()
     var sendData = {
       phone: phone,
-      username: name
+      username: name,
+      age: age,
+      zip: zip,
+      firstName: firstName,
+      lastName: lastName
     }
     sendData = JSON.stringify(sendData)
     $.ajax({
