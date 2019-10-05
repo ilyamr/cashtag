@@ -37,6 +37,11 @@ Webflow.push(function () {
       phone: phone,
     }
     sendData = JSON.stringify(sendData)
+
+    console.log('sendData');
+    console.log(sendData);
+    
+
     $.ajax({
       url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/login',
       method: 'POST',
