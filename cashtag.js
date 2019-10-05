@@ -28,6 +28,37 @@ Webflow.push(function () {
     location.replace("/register?name=" + name)
   })
 
+  $('#wf-form-Login').submit(function (evt) {
+    evt.preventDefault()
+    $('#register-submit').val('Please wait...')
+    $('#register-error').text('').hide()
+    var phone = $('#phone-input').val()
+    var sendData = {
+      phone: phone,
+    }
+    sendData = JSON.stringify(sendData)
+    $.ajax({
+      url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/login',
+      method: 'POST',
+      dataType:'JSON',
+      data: sendData,
+      success: function (result) {
+        if (result.data && result.data.codeSent) {
+          $('#register-wrapper').hide()
+          $('#confirm-wrapper').show()
+          $('#register-submit').val('Submit')
+        }
+        if (result.error) {
+          $('#register-error').text(result.message)
+          $('#register-error').show()
+          $('#register-submit').val('Submit')
+        }
+      }
+    })
+  })
+
+
+
   $('#wf-form-Register').submit(function (evt) {
     evt.preventDefault()
     $('#register-submit').val('Please wait...')
