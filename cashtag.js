@@ -49,6 +49,7 @@ Webflow.push(function () {
       data: sendData,
       success: function (result) {
         if (result.data && result.data.codeSent) {
+          $('.register__enter').children('span').first().text(result.data.phone)
           $('#register-wrapper').hide()
           $('#confirm-wrapper').show()
           $('#register-submit').val('Submit')
@@ -87,7 +88,8 @@ Webflow.push(function () {
       contentType: "application/json",
       data: sendData,
       success: function (result) {
-        if (result.data && result.data.codeSent) {
+        if (result.data && result.data.user.verified) {
+          $('.registersuccess__thanks').children('span').first().text(result.data.user.firstName);
           $('#register-wrapper').hide()
           $('#confirm-wrapper').show()
           $('#register-submit').val('Submit')
@@ -122,9 +124,7 @@ Webflow.push(function () {
         if (result.data && result.data.user.verified) {
           document.cookie = "Authorization=JWT " + result.data.access_token;
           $('#register-wrapper').hide()
-          $('#confirm-wrapper').hide()
-
-          $('.register__enter>span').text(result.data.user.phone)
+          $('#confirm-wrapper').hide()         
           $('#registered-name').text(result.data.user.firstName)
           $('#success-wrapper').show()
           $('#confirm-submit').val('Confirm')
