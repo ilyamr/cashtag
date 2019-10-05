@@ -45,7 +45,7 @@ Webflow.push(function () {
     $.ajax({
       url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/login',
       method: 'POST',
-      dataType:'JSON',
+      contentType: "application/json",
       data: sendData,
       success: function (result) {
         if (result.data && result.data.codeSent) {
