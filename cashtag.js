@@ -1,21 +1,21 @@
 $(document).ready(function () {
-  if ($('body.register').length > 0) {
-    $('#register-wrapper').show()
-    $('#confirm-wrapper').hide()
-    $('#success-wrapper').hide()
+  // if ($('body.register').length > 0) {
+  //   $('#register-wrapper').show()
+  //   $('#confirm-wrapper').hide()
+  //   $('#success-wrapper').hide()
 
-    $('#register-update').click(function () {
-      $('#register-wrapper').show()
-      $('#confirm-wrapper').hide()
-      $('#success-wrapper').hide()
-    })
+  //   $('#register-update').click(function () {
+  //     $('#register-wrapper').show()
+  //     $('#confirm-wrapper').hide()
+  //     $('#success-wrapper').hide()
+  //   })
 
-    if (location.search !== '') {
-      var nameVal = location.search
-      nameVal = nameVal.substring(nameVal.indexOf('=')+1)
-      $('#register-name-input').val(nameVal)
-    }
-  }
+  //   if (location.search !== '') {
+  //     var nameVal = location.search
+  //     nameVal = nameVal.substring(nameVal.indexOf('=')+1)
+  //     $('#register-name-input').val(nameVal)
+  //   }
+  // }
 })
 
 var Webflow = Webflow || []
@@ -32,7 +32,7 @@ Webflow.push(function () {
     evt.preventDefault()
     $('#register-submit').val('Please wait...')
     $('#register-error').text('').hide()
-    var phone = $('#phone-input').val()
+    var phone = $('#register-phone-input').val()
     var sendData = {
       phone: phone,
     }
@@ -78,7 +78,7 @@ Webflow.push(function () {
     $.ajax({
       url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/signup',
       method: 'POST',
-      dataType:'JSON',
+      contentType: "application/json",
       data: sendData,
       success: function (result) {
         if (result.data && result.data.codeSent) {
@@ -110,16 +110,17 @@ Webflow.push(function () {
     $.ajax({
       url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/verify',
       method: 'POST',
-      dataType:'JSON',
+      contentType: "application/json",
       data: sendData,
       success: function (result) {
-        if (result.data && result.data.verified) {
+        if (result.data && result.data.user.verified) {
+          document.cookie = "Authorization=JWT " + result.data.access_token;
           $('#register-wrapper').hide()
           $('#confirm-wrapper').hide()
           $('#registered-name').text(name)
           $('#success-wrapper').show()
           $('#confirm-submit').val('Confirm')
-        } else if (result.data && !result.data.verified) {
+        } else if (result.data && !result.data.user.verified) {
           $('#confirm-error').text('you did not pass the verification')
           $('#confirm-error').show()
           $('#confirm-submit').val('Confirm')
@@ -145,7 +146,7 @@ Webflow.push(function () {
     $.ajax({
       url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/signup',
       method: 'POST',
-      dataType:'JSON',
+      contentType: "application/json",
       data: sendData,
       success: function (result) {
         if (result.data && result.data.codeSent) {
