@@ -25,13 +25,23 @@ function getUserAuthToken(){
 }
 
 
-function voteForPost(shortcode, shouldShowAlerts = false){
+function voteForPost(shortcode, shouldShowAlerts = false, authToken){
+
+  console.log('voteForPost authToken');
+
+  console.log('authToken');
+  console.log(authToken);
+  
+  
   $.ajax({
-    url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/' + shortCodes[i] + '/vote',
+    url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/' + shortcode + '/vote',
     method: 'POST',
     contentType: "application/json",
-    headers: {"Authorization": authToken},
+    // headers: {"Authorization": authToken},
     data: {},
+    beforeSend: function (jqXHR) {
+          jqXHR.setRequestHeader("Authorization", authToken);
+  },
     xhrFields: {
       withCredentials: false
    },
@@ -40,6 +50,8 @@ function voteForPost(shortcode, shouldShowAlerts = false){
         console.log('vote result data');
         console.log(result.data);
         
+        removeVotingLocalStorageData()
+
         shouldShowAlerts ? alert('Successful vote!') : null;
       } 
       else {
@@ -48,6 +60,11 @@ function voteForPost(shortcode, shouldShowAlerts = false){
       }
     }
   })
+}
+
+function removeVotingLocalStorageData(){
+  window.localStorage.removeItem('voteShortCodes')
+  window.localStorage.removeItem('selectedShortCodeForVoting')
 }
 
 
@@ -72,17 +89,18 @@ Webflow.push(function () {
 
       const authToken = getUserAuthToken();
 
+          let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'));
+          console.log('shortcode saved for vote:');
+      console.log(shortCodes[i]);
+
+
+     window.localStorage.setItem('selectedShortCodeForVoting', shortCodes[i])
+
       switch(authToken) {
         case undefined:
           window.location = '/login-vote';
         default:
-          let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'));
-
-
-          console.log('shortCodes');
-          console.log(shortCodes);
-
-          voteForPost(shortCodes[i], true);
+          voteForPost(shortCodes[i], true, authToken);
       }
 
         
@@ -181,6 +199,13 @@ Webflow.push(function () {
       success: function (result) {
         if (result.data && result.data.user.verified) {
           document.cookie = "Authorization=JWT " + result.data.access_token;
+
+          if(window.localStorage.getItem('selectedShortCodeForVoting') !== null ) {
+
+            voteForPost(window.localStorage.getItem('selectedShortCodeForVoting'), false, 'JWT ' + result.data.access_token);
+            removeVotingLocalStorageData();
+          }
+
           $('#register-wrapper').hide()
           $('#confirm-wrapper').hide()         
           $('#registered-name').text(result.data.user.firstName)
