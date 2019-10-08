@@ -18,6 +18,39 @@ $(document).ready(function () {
   }
 })
 
+
+
+function getUserAuthToken(){
+  return Object.fromEntries(document.cookie.split('; ').map(x => x.split('='))).Authorization;
+}
+
+
+function voteForPost(shortcode, shouldShowAlerts = false){
+  $.ajax({
+    url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/' + shortCodes[i] + '/vote',
+    method: 'POST',
+    contentType: "application/json",
+    headers: {"Authorization": authToken},
+    data: {},
+    xhrFields: {
+      withCredentials: false
+   },
+    success: function (result) {
+      if (result.data) {
+        console.log('vote result data');
+        console.log(result.data);
+        
+        shouldShowAlerts ? alert('Successful vote!') : null;
+      } 
+      else {
+        shouldShowAlerts ? alert('Voting error!') : null;
+       
+      }
+    }
+  })
+}
+
+
 var Webflow = Webflow || []
 Webflow.push(function () {
   $(document).off('submit')
@@ -28,6 +61,35 @@ Webflow.push(function () {
     location.replace("/register?name=" + name)
   })
 
+  var voteButtonIds = [
+    'submit-vote-1',
+    'submit-vote-2',
+    'submit-vote-3'
+  ]
+
+  for(let i = 0; i < voteButtonIds.length; i++){
+    $('#'+voteButtonIds[i]).click( function() {
+
+      const authToken = getUserAuthToken();
+
+      switch(authToken) {
+        case undefined:
+          window.location = '/login-vote';
+        default:
+          let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'));
+
+
+          console.log('shortCodes');
+          console.log(shortCodes);
+
+          voteForPost(shortCodes[i], true);
+      }
+
+        
+    } )
+  }
+
+
   $('#wf-form-Login').submit(function (evt) {
     evt.preventDefault()
     $('#register-submit').val('Please wait...')
@@ -37,10 +99,6 @@ Webflow.push(function () {
       phone: phone,
     }
     sendData = JSON.stringify(sendData)
-
-    console.log('sendData');
-    console.log(sendData);
-    
 
     $.ajax({
       url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/login',
@@ -259,7 +317,67 @@ $(document).ready(function () {
         }
       }
     })
-    
+
+
+
+
+
+    var votesShortcode = ''
+    function getVotePosts () {
+      $.ajax({
+        url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes',
+        success: function (result) {
+          var votePosts = result.data.posts
+          if (votePosts.length > 0) {
+
+            try {
+              window.localStorage.setItem('voteShortCodes', JSON.stringify(votePosts.map(x => x.shortcode)))
+            } catch (error) {
+              console.log(error);
+            }
+
+
+            $('#votes-tag-top .loadingposts').remove()
+            function showTopPosts () {
+              $.each(votePosts, function (i, e) {
+                var description = $($.parseHTML(votePosts[i].description)).text()
+                if (votePosts[i].likes) {
+                   var likes = votePosts[i].likes + ' likes'
+                } else {
+                  var likes = '0 likes'
+                }
+                var photo = votePosts[i].display_url
+                var photo2 = votePosts[i].photo_link_640x640
+                var url = votePosts[i].post_url
+                if (votePosts[i].username) {
+                  var username = votePosts[i].username
+                } else {
+                  var username = ''
+                }
+                if (votePosts[i].profile_pic_url) {
+                   var avatar = votePosts[i].profile_pic_url
+                } else {
+                  var avatar = 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
+                }
+                $('#votes-tag-top').append('<a class="instacard" href="' + url + '" target="_blank"><div class="instacard__top"><div class="instacard__avatar" style="background-image: url(' + avatar + ')"></div><div class="instacard__name">' + username + '</div><img src="https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6923af80da2a82526caa25_instagram%20icon.png" alt="" class="instacard__icon" /></div><div class="instacard__image" style="background-image: url(' + photo + '), url(' + photo2 + ');"></div><div class="instacard__bottom"><div class="instacard__likes"><div class="instacard__likes-count">' + likes + '</div></div><div class="instacard__desc"><div class="instacard__desc-name">' + username + '</div><div class="instacard__desc-text">' + description + '</div></div></div></a>');
+              })
+            }
+            showTopPosts()
+          } 
+        }
+      })
+    }
+
+
+    getVotePosts()
+    $('#first-top-show-more').click(function () {
+      $('#first-top-show-more').text('Loading...')
+      getVotePosts()
+    })
+
+
+
+
     var firstTag = $('#first-title-tag').text()
     var last_likes1 = ''
     var last_shortcode1 = ''
@@ -310,6 +428,7 @@ $(document).ready(function () {
         }
       })
     }
+
     getTopPosts()
     $('#first-top-show-more').click(function () {
       $('#first-top-show-more').text('Loading...')
