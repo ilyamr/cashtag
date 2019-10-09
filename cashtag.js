@@ -164,8 +164,10 @@ Webflow.push(function () {
       contentType: "application/json",
       data: sendData,
       success: function (result) {
-        if (result.data && result.data.user.verified) {
-          $('.registersuccess__thanks').children('span').first().text(result.data.user.firstName);
+        if (result.data && result.data.codeSent) {
+          if(result.data.user.firstName !== undefined){
+            $('.registersuccess__thanks').children('span').first().text(result.data.user.firstName);
+          }
           $('#register-wrapper').hide()
           $('#confirm-wrapper').show()
           $('#register-submit').val('Submit')
@@ -207,8 +209,10 @@ Webflow.push(function () {
           }
 
           $('#register-wrapper').hide()
-          $('#confirm-wrapper').hide()         
-          $('#registered-name').text(result.data.user.firstName)
+          $('#confirm-wrapper').hide()   
+          if(result.data.user.firstName !== undefined){
+            $('#registered-name').text(result.data.user.firstName)
+          }
           $('#success-wrapper').show()
           $('#confirm-submit').val('Confirm')
         } else if (result.data && !result.data.user.verified) {
