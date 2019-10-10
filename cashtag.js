@@ -3,7 +3,6 @@ $(document).ready(function () {
     $('#register-wrapper').show()
     $('#confirm-wrapper').hide()
     $('#success-wrapper').hide()
-
     $('#register-update').click(function () {
       $('#register-wrapper').show()
       $('#confirm-wrapper').hide()
@@ -18,12 +17,28 @@ $(document).ready(function () {
   }
 })
 
-
-
 function getUserAuthToken(){
   return Object.fromEntries(document.cookie.split('; ').map(x => x.split('='))).Authorization;
 }
 
+var voteButtonIds = [
+  'submit-vote-1',
+  'submit-vote-2',
+  'submit-vote-3'
+]
+
+if(getUserAuthToken() != undefined) {
+  for(let i = 0; i < voteButtonIds.length; i++){
+    $('#'+voteButtonIds[i]).hide()
+  }
+}
+
+$('#register-phone-input').on('input', function(e) {
+  console.log($('#register-phone-input').val().replace(/[^0-9.+]/g, '').replace(/(..*)./g, '$1'))
+  $('#register-phone-input').val($('#register-phone-input').val().replace(/[^0-9.\+]/g, '').replace(/(\..*)\./g, '$1'));
+});
+
+$('#success-wrapper-vote').find(".registersuccess__thanks").last().find('span').find('.small').text(new Date(window.localStorage.getItem('tune')).toString().split('GMT')[0])
 
 function voteForPost(shortcode, shouldShowAlerts = false, authToken){
 
@@ -31,13 +46,12 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken){
 
   console.log('authToken');
   console.log(authToken);
-  
-  
+
+
   $.ajax({
     url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/' + shortcode + '/vote',
     method: 'POST',
     contentType: "application/json",
-    // headers: {"Authorization": authToken},
     data: {},
     beforeSend: function (jqXHR) {
           jqXHR.setRequestHeader("Authorization", authToken);
@@ -46,17 +60,22 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken){
       withCredentials: false
    },
     success: function (result) {
+      console.log('result', result);
       if (result.data) {
         console.log('vote result data');
         console.log(result.data);
         
+        window.localStorage.setItem('tune', result.data.contestFinishAt);
+
+        $(".registersuccess__thanks").last().find('span').find('.small').text(new Date(result.data.contestFinishAt).toString().split('GMT')[0]);
+
         removeVotingLocalStorageData()
 
         shouldShowAlerts ? alert('Successful vote!') : null;
-      } 
+      }
       else {
         shouldShowAlerts ? alert('Voting error!') : null;
-       
+
       }
     }
   })
@@ -67,22 +86,15 @@ function removeVotingLocalStorageData(){
   window.localStorage.removeItem('selectedShortCodeForVoting')
 }
 
-
 var Webflow = Webflow || []
 Webflow.push(function () {
   $(document).off('submit')
-  
+
   $('#wf-form-HomeReg').submit(function (evt) {
     evt.preventDefault()
     var name = $('#home-name-input').val()
     location.replace("/register?name=" + name)
   })
-
-  var voteButtonIds = [
-    'submit-vote-1',
-    'submit-vote-2',
-    'submit-vote-3'
-  ]
 
   for(let i = 0; i < voteButtonIds.length; i++){
     $('#'+voteButtonIds[i]).click( function() {
@@ -95,15 +107,24 @@ Webflow.push(function () {
 
 
      window.localStorage.setItem('selectedShortCodeForVoting', shortCodes[i])
+      
+      console.log('authToken', authToken)
 
-      switch(authToken) {
-        case undefined:
-          window.location = '/login-vote';
-        default:
-          voteForPost(shortCodes[i], true, authToken);
+      // switch(authToken) {
+      //   case undefined:
+      //     // window.location = '/login-vote';
+      //   default:
+      //     voteForPost(shortCodes[i], true, authToken);
+      //     // window.location = '/autorized-vote';
+      // }
+      if(authToken == undefined) {
+        window.location = '/login-vote';
+      } else {
+        voteForPost(shortCodes[i], true, authToken);
+        window.location = '/autorized-vote';
       }
 
-        
+
     } )
   }
 
@@ -131,7 +152,12 @@ Webflow.push(function () {
           $('#register-submit').val('Submit')
         }
         if (result.error) {
-          $('#register-error').text(result.message)
+          console.log(result.message);
+          if (result.message.includes('wrong phone')) {
+            $('#register-error').text('Wrong phone number, please register by the link below');
+          } else {
+            $('#register-error').text('Wrong/invalid number');
+          }
           $('#register-error').show()
           $('#register-submit').val('Submit')
         }
@@ -165,9 +191,6 @@ Webflow.push(function () {
       data: sendData,
       success: function (result) {
         if (result.data && result.data.codeSent) {
-          if(result.data.user.firstName !== undefined){
-            $('.registersuccess__thanks').children('span').first().text(result.data.user.firstName);
-          }
           $('#register-wrapper').hide()
           $('#confirm-wrapper').show()
           $('#register-submit').val('Submit')
@@ -200,16 +223,18 @@ Webflow.push(function () {
       data: sendData,
       success: function (result) {
         if (result.data && result.data.user.verified) {
-          document.cookie = "Authorization=JWT " + result.data.access_token;
-
+          document.cookie = "Authorization=JWT " + result.data.access_token + ';expires=Mon, 01 Jan 2035 00:00:00 GMT"';
+          
           if(window.localStorage.getItem('selectedShortCodeForVoting') !== null ) {
 
             voteForPost(window.localStorage.getItem('selectedShortCodeForVoting'), false, 'JWT ' + result.data.access_token);
             removeVotingLocalStorageData();
           }
+          
+          console.log(localStorage.getItem('tune'))
 
           $('#register-wrapper').hide()
-          $('#confirm-wrapper').hide()   
+          $('#confirm-wrapper').hide()
           if(result.data.user.firstName !== undefined){
             $('#registered-name').text(result.data.user.firstName)
           }
@@ -286,7 +311,7 @@ $(document).ready(function () {
     }, 1000)
   }
 
-  if ($('body.ranking-page').length > 0) {   
+  if ($('body.ranking-page').length > 0) {
     function getQuery(q) {
       var query = window.location.search.substring(1)
       var vars = query.split("&")
@@ -355,8 +380,24 @@ $(document).ready(function () {
     function getVotePosts () {
       $.ajax({
         url: 'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes',
+        headers: {"Authorization": getUserAuthToken()},
         success: function (result) {
           var votePosts = result.data.posts
+          
+          let voted = false;
+          for(let i = 0; i < votePosts.length; i++) {
+            if (votePosts[i].isVotedByUser) {
+              voted = true;
+            }
+          }
+          
+          
+          if(!voted) {
+            for(let i = 0; i < voteButtonIds.length; i++) {
+              $('#'+voteButtonIds[i]).show(500);
+            }
+          }   
+
           if (votePosts.length > 0) {
 
             try {
@@ -392,7 +433,7 @@ $(document).ready(function () {
               })
             }
             showTopPosts()
-          } 
+          }
         }
       })
     }
@@ -623,7 +664,7 @@ $(document).ready(function () {
             })
             $('#second-recent-show-more').text('All For Now')
           }
-          
+
         }
       })
     }
