@@ -40,6 +40,37 @@ $('#register-phone-input').on('input', function(e) {
 
 $('#success-wrapper-vote').find(".registersuccess__thanks").last().find('span').find('.small').text(new Date(window.localStorage.getItem('tune')).toString().split('GMT')[0])
 
+
+
+function showUserNameInHeader() {
+
+  if(window.localStorage.getItem('username') !== null) {
+
+    replaceLink($("#login-link"), window.localStorage.getItem('username'), '#');
+    replaceLink($("#register-link"), 'LOG OUT', '#');
+
+    $("#register-link").click(function () {
+      window.localStorage.removeItem('username');
+
+      replaceLink($("#login-link"), 'LOG IN', '/login');
+      replaceLink($("#register-link"), 'REGISTER', '/register');
+
+    })
+
+  }
+}
+
+showUserNameInHeader();
+
+
+function replaceLink(jqueryElement, newName, newLink) {
+  jqueryElement.fadeOut(100, function() {
+    $(this).text(newName).fadeIn(100);
+    $(this).attr('href', newLink);
+});
+}
+
+
 function voteForPost(shortcode, shouldShowAlerts = false, authToken){
 
   console.log('voteForPost authToken');
@@ -224,6 +255,11 @@ Webflow.push(function () {
       success: function (result) {
         if (result.data && result.data.user.verified) {
           document.cookie = "Authorization=JWT " + result.data.access_token + ';expires=Mon, 01 Jan 2035 00:00:00 GMT"';
+
+
+          if(result.data.user.username !== 'undefined') {
+            window.localStorage.setItem('username', result.data.user.username);
+          }
           
           if(window.localStorage.getItem('selectedShortCodeForVoting') !== null ) {
 
@@ -231,7 +267,7 @@ Webflow.push(function () {
             removeVotingLocalStorageData();
           }
           
-          console.log(localStorage.getItem('tune'))
+          showUserNameInHeader();
 
           $('#register-wrapper').hide()
           $('#confirm-wrapper').hide()
