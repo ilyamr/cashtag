@@ -17,7 +17,9 @@ $(document).ready(function () {
   }
 })
 
-if ($('.navigation__container').height() > 85) {
+// $('.w-container ').css('max-width', '1115px');
+
+if ($('#login-link').text().length > 20) {
   $('.navigation__menu').hide()
   $('.menu-button')
     .show()
@@ -105,21 +107,27 @@ $('#register-zip').on('input', function (e) {
   )
 })
 
-$('#success-wrapper-vote')
-  .find('.registersuccess__thanks')
-  .last()
-  .find('span')
-  .find('.small')
-  .text(
-    new Date(window.localStorage.getItem('tune')).toString().split('GMT')[0]
-  )
+function showTuneInDate() {
 
-$('#success-wrapper-vote')
-  .find('.registersuccess__thanks')
-  .last()
-  .find('span')
-  .find('.small')
-  .after('<br>')
+  if(window.localStorage.getItem('tune') && window.localStorage.getItem('tune') !== 'undefined') {
+    $('#tune-in-date')
+      .find('span')
+      .find('.small')
+      .text(
+        new Date(window.localStorage.getItem('tune')).toString().split('GMT')[0]
+      )
+
+    $('#tune-in-date')
+      .find('span')
+      .find('.small')
+      .after('<br>');
+
+      $('#tune-in-date').show(500);
+  }
+}
+
+showTuneInDate();
+
 
 function showUserNameInHeader () {
   console.log(window.localStorage.getItem('username'))
@@ -138,6 +146,7 @@ function showUserNameInHeader () {
 
       replaceLink($('#login-link'), 'LOG IN', '/login')
       replaceLink($('#register-link'), 'REGISTER', '/register')
+      location.reload(true)
     })
   }
 }
@@ -176,10 +185,10 @@ function getDate (authToken) {
   $('.registersuccess__thanks').hide()
   $.ajax({
     url:
-      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/enddate',
+      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/end',
     success: function (result) {
       console.log('result', result)
-      if (result.data) {
+      if (result.data !== null) {
         $('.registersuccess__thanks').show()
         console.log('vote result data')
         console.log(result.data)
@@ -200,7 +209,11 @@ function getDate (authToken) {
 
         window.localStorage.setItem('tune', result.data)
       } else {
-        alert('Voting error!')
+        $('.registersuccess__thanks')
+          .last()
+          .find('span')
+          .find('.small')
+          .hide()
       }
     }
   })
@@ -253,7 +266,7 @@ function voteForPost (shortcode, shouldShowAlerts = false, authToken) {
 
         removeVotingLocalStorageData()
 
-        window.location='/autorized-vote';
+        window.location='/authorized-vote';
 
       } else {
         shouldShowAlerts ? alert('Voting error!') : null
@@ -305,6 +318,7 @@ Webflow.push(function () {
       .text('')
       .hide()
     var phone = $('#register-phone-input').val()
+    window.localStorage.setItem('phone', phone);
     var sendData = {
       phone: phone
     }
@@ -333,7 +347,7 @@ Webflow.push(function () {
               'Wrong phone number, please register by the link below'
             )
           } else {
-            $('#register-error').text('Wrong/invalid number')
+            $('#register-error').text('There is no account associated with this phone number. Please try again or register below')
           }
           $('#register-error').show()
           $('#register-submit').val('Submit')
@@ -350,6 +364,7 @@ Webflow.push(function () {
     var zip = $('#register-zip').val()
     var firstName = $('#register-firstname').val()
     var lastName = $('#register-lastname').val()
+    window.localStorage.setItem('phone', phone);
     var sendData = {
       phone: phone,
       username: name,
@@ -389,6 +404,7 @@ Webflow.push(function () {
     var name = $('#register-name-input').val()
     var code = $('#register-code-input').val()
     var phone = $('#register-phone-input').val()
+    window.localStorage.setItem('phone', phone);
     var sendData = {
       phone: phone,
       code: code
@@ -456,6 +472,7 @@ Webflow.push(function () {
     var name = $('#register-name-input').val()
     var code = $('#register-code-input').val()
     var phone = $('#register-phone-input').val()
+    window.localStorage.setItem('phone', phone);
     var sendData = {
       phone: phone,
       code: code
@@ -519,7 +536,8 @@ Webflow.push(function () {
       .text('')
       .hide()
     var name = $('#register-name-input').val()
-    var phone = $('#register-phone-input').val()
+    var phone = window.localStorage.getItem('phone');
+    console.log(phone)
     var age = $('#register-age').val()
     var zip = $('#register-zip').val()
     var firstName = $('#register-firstname').val()
@@ -532,10 +550,11 @@ Webflow.push(function () {
       firstName: firstName,
       lastName: lastName
     }
+    let urlPage = window.location.href.includes("register") ? 'signup' : 'login'
     sendData = JSON.stringify(sendData)
     $.ajax({
       url:
-        'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/signup/verify',
+        'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/' + urlPage,
       method: 'POST',
       contentType: 'application/json',
       data: sendData,
