@@ -33,6 +33,29 @@ function getUserAuthToken () {
 
 var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
 
+
+function assignVoteButtonClickEvents(voteButtonIds) {
+  for (let i = 0; i < voteButtonIds.length; i++) {
+    $('#' + voteButtonIds[i]).click(function () {
+      const authToken = getUserAuthToken()
+
+      let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
+      console.log('shortcode saved for vote:')
+      console.log(shortCodes[i])
+
+      window.localStorage.setItem('selectedShortCodeForVoting', shortCodes[i])
+
+      switch (authToken) {
+        case undefined:
+          window.location = '/login-vote'
+        default:
+          voteForPost(shortCodes[i], true, authToken)
+      }
+    })
+  }
+}
+
+
 $('#register-phone-input').on('input', function (e) {
   if (
     $('#register-phone-input')
@@ -227,11 +250,11 @@ function voteForPost (shortcode, shouldShowAlerts = false, authToken) {
           //   $(".registersuccess__thanks").first().find('strong').text("You've already voted!");
           //   $(".registersuccess__thanks").last().hide();
         }
-        console.log('yrrrrrrr')
 
         removeVotingLocalStorageData()
 
-        shouldShowAlerts ? alert('Successful vote!') : null
+        window.location='/autorized-vote';
+
       } else {
         shouldShowAlerts ? alert('Voting error!') : null
       }
@@ -254,24 +277,26 @@ Webflow.push(function () {
     location.replace('/register?name=' + name)
   })
 
-  for (let i = 0; i < voteButtonIds.length; i++) {
-    $('#' + voteButtonIds[i]).click(function () {
-      const authToken = getUserAuthToken()
+  assignVoteButtonClickEvents(voteButtonIds);
 
-      let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
-      console.log('shortcode saved for vote:')
-      console.log(shortCodes[i])
+  // for (let i = 0; i < voteButtonIds.length; i++) {
+  //   $('#' + voteButtonIds[i]).click(function () {
+  //     const authToken = getUserAuthToken()
 
-      window.localStorage.setItem('selectedShortCodeForVoting', shortCodes[i])
+  //     let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
+  //     console.log('shortcode saved for vote:')
+  //     console.log(shortCodes[i])
 
-      switch (authToken) {
-        case undefined:
-          window.location = '/login-vote'
-        default:
-          voteForPost(shortCodes[i], true, authToken)
-      }
-    })
-  }
+  //     window.localStorage.setItem('selectedShortCodeForVoting', shortCodes[i])
+
+  //     switch (authToken) {
+  //       case undefined:
+  //         window.location = '/login-vote'
+  //       default:
+  //         voteForPost(shortCodes[i], true, authToken)
+  //     }
+  //   })
+  // }
 
   $('#wf-form-Login').submit(function (evt) {
     evt.preventDefault()
@@ -740,14 +765,8 @@ $(document).ready(function () {
             }
             showTopPosts()
 
-            let votedPosts = false
-            for (let i = 0; i < votePosts.length; i++) {
-              if (votePosts[i].isVotedByUser === true) {
-                votedPosts = true
-              }
-            }
 
-            if (!votedPosts) {
+            if (!voted) {
               for (let i = 0; i < voteButtonIds.length; i++) {
                 $('#' + voteButtonIds[i]).show(500)
               }
@@ -757,38 +776,7 @@ $(document).ready(function () {
               }
             }
 
-            for (let i = 0; i < voteButtonIds.length; i++) {
-              $('#' + voteButtonIds[i]).click(function () {
-                const authToken = getUserAuthToken()
-
-                let shortCodes = JSON.parse(
-                  localStorage.getItem('voteShortCodes')
-                )
-                console.log('shortcode saved for vote:')
-                console.log(shortCodes[i])
-
-                window.localStorage.setItem(
-                  'selectedShortCodeForVoting',
-                  shortCodes[i]
-                )
-
-                console.log('authToken', authToken)
-
-                // switch(authToken) {
-                //   case undefined:
-                //     // window.location = '/login-vote';
-                //   default:
-                //     voteForPost(shortCodes[i], true, authToken);
-                //     // window.location = '/autorized-vote';
-                // }
-                if (authToken == undefined) {
-                  window.location = '/login-vote'
-                } else {
-                  getDate(authToken)
-                  window.location = '/autorized-vote'
-                }
-              })
-            }
+            assignVoteButtonClickEvents(voteButtonIds);
           }
         }
       })
