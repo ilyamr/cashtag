@@ -351,13 +351,7 @@ Webflow.push(function () {
         }
         if (result.error) {
           console.log(result.message)
-          if (result.message.includes('wrong phone')) {
-            $('#register-error').text(
-              'Wrong phone number, please register by the link below'
-            )
-          } else {
-            $('#register-error').text('Wrong phone number, please register by the link below')
-          }
+          $('#register-error').text(result.message);
           $('#register-error').show()
           $('#register-submit').val('Submit')
         }
@@ -570,7 +564,7 @@ Webflow.push(function () {
       data: sendData,
       success: function (result) {
         if (result.data && result.data.codeSent) {
-          alert('sent a new code')
+          alert('Sent new code')
         }
         if (result.error) {
           $('#confirm-error').text(result.message)
