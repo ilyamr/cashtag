@@ -1320,11 +1320,11 @@ $(document).ready(function () {
     //       }
     //     }
     //   })
-    }
-    getRecentPosts()
-    $('#third-recent-show-more').click(function () {
-      $('#third-recent-show-more').text('Loading...')
-      getRecentPosts()
-    })
+    // }
+    // getRecentPosts()
+    // $('#third-recent-show-more').click(function () {
+    //   $('#third-recent-show-more').text('Loading...')
+    //   getRecentPosts()
+    // })
   }
 })
