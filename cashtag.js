@@ -28,9 +28,10 @@ if ($('#login-link').text().length > 20) {
     .css('color', 'white')
 }
 
-function getUserAuthToken () {
-  return Object.fromEntries(document.cookie.split('; ').map(x => x.split('=')))
-    .Authorization
+function getUserAuthTokenByName(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
 var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
@@ -39,7 +40,7 @@ var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
 function assignVoteButtonClickEvents(voteButtonIds) {
   for (let i = 0; i < voteButtonIds.length; i++) {
     $('#' + voteButtonIds[i]).click(function () {
-      const authToken = getUserAuthToken()
+      const authToken = getUserAuthTokenByName('Authorization')
 
       let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
       console.log('shortcode saved for vote:')
@@ -294,7 +295,7 @@ Webflow.push(function () {
 
   // for (let i = 0; i < voteButtonIds.length; i++) {
   //   $('#' + voteButtonIds[i]).click(function () {
-  //     const authToken = getUserAuthToken()
+  //     const authToken = getUserAuthTokenByName('Authorization')
 
   //     let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
   //     console.log('shortcode saved for vote:')
@@ -699,7 +700,7 @@ $(document).ready(function () {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes',
-        headers: { Authorization: getUserAuthToken() },
+        headers: { Authorization: getUserAuthTokenByName('Authorization') },
         success: function (result) {
           var votePosts = result.data.posts
 
