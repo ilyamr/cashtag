@@ -15,6 +15,11 @@ $(document).ready(function () {
       $('#register-name-input').val(nameVal)
     }
   }
+
+
+  if($('success-wrapper-vote')){
+    getDate();
+  }
 })
 
 // $('.w-container ').css('max-width', '1115px');
@@ -28,10 +33,9 @@ if ($('#login-link').text().length > 20) {
     .css('color', 'white')
 }
 
-function getUserAuthTokenByName(name) {
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
+function getUserAuthToken() {
+  return Object.fromEntries(document.cookie.split('; ').map(x => x.split('=')))
+    .Authorization
 }
 
 var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
@@ -40,7 +44,7 @@ var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
 function assignVoteButtonClickEvents(voteButtonIds) {
   for (let i = 0; i < voteButtonIds.length; i++) {
     $('#' + voteButtonIds[i]).click(function () {
-      const authToken = getUserAuthTokenByName('Authorization')
+      const authToken = getUserAuthToken()
 
       let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
       console.log('shortcode saved for vote:')
@@ -108,35 +112,27 @@ $('#register-zip').on('input', function (e) {
   )
 })
 
-function showTuneInDate() {
+$('#success-wrapper-vote')
+  .find('.registersuccess__thanks')
+  .last()
+  .find('span')
+  .find('.small')
+  .text(
+    new Date(window.localStorage.getItem('tune')).toString().split('GMT')[0]
+  )
 
-  if(window.localStorage.getItem('tune') && window.localStorage.getItem('tune') !== 'undefined') {
-    $('#tune-in-date')
-      .find('span')
-      .find('.small')
-      .text(
-        new Date(window.localStorage.getItem('tune')).toString().split('GMT')[0]
-      )
 
-    $('#tune-in-date')
-      .find('span')
-      .find('.small')
-      .after('<br>');
-
-      $('#tune-in-date').show(500);
-  }
-}
-
-showTuneInDate();
-
+$('#success-wrapper-vote')
+  .find('.registersuccess__thanks')
+  .last()
+  .find('span')
+  .find('.small')
+  .after('<br>')
 
 function showUserNameInHeader () {
   console.log(window.localStorage.getItem('username'))
 
-  if (
-    window.localStorage.getItem('username') !== 'undefined' &&
-    window.localStorage.getItem('username') !== null
-  ) {
+  if (getUserAuthToken() !== undefined) {
     replaceLink($('#login-link'), window.localStorage.getItem('username'), '#')
     replaceLink($('#register-link'), 'LOG OUT', '#')
 
@@ -154,6 +150,13 @@ function showUserNameInHeader () {
 
 showUserNameInHeader()
 
+
+// window.localStorage.removeItem('username')
+// console.log( window.localStorage.getItem('username'))
+if(getUserAuthToken() !== undefined && window.localStorage.getItem('username') === 'undefined') {
+  $('#login-link').hide();
+}
+
 function replaceLink (jqueryElement, newName, newLink) {
   jqueryElement.fadeOut(100, function () {
     $(this)
@@ -170,11 +173,14 @@ function getDeadlineDate () {
       'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/contests/end',
     success: function (result) {
       if (result.data) {
+        console.log('contests/end')
         console.log(result.data)
         $('#finish-date')
           .show()
           .text(new Date(result.data).toString().split('GMT')[0])
         $('#deadline').show()
+
+        $('#tune-in-date').find('span').text(new Date(result.data).toString().split('GMT')[0]);
       }
     }
   })
@@ -186,7 +192,7 @@ function getDate (authToken) {
   $('.registersuccess__thanks').hide()
   $.ajax({
     url:
-      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/end',
+      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/enddate',
     success: function (result) {
       console.log('result', result)
       if (result.data !== null) {
@@ -205,6 +211,10 @@ function getDate (authToken) {
           .find('span')
           .find('.small')
           .after('<br>')
+
+
+          $('#tune-in-date').find('span').find('strong').text(new Date(result.data).toString().split('GMT')[0]);
+          $('#tune-in-date').show(500);
 
         removeVotingLocalStorageData()
 
@@ -256,13 +266,11 @@ function voteForPost (shortcode, shouldShowAlerts = false, authToken) {
             .find('.registersuccess__thanks')
             .first()
             .text("You've already voted!")
-          $('#success-wrapper')
-            .find('.registersuccess__thanks')
-            .last()
-            .hide()
           //   console.log($(".registersuccess__thanks").first().find('strong'))
           //   $(".registersuccess__thanks").first().find('strong').text("You've already voted!");
           //   $(".registersuccess__thanks").last().hide();
+
+          return;
         }
 
         removeVotingLocalStorageData()
@@ -295,7 +303,7 @@ Webflow.push(function () {
 
   // for (let i = 0; i < voteButtonIds.length; i++) {
   //   $('#' + voteButtonIds[i]).click(function () {
-  //     const authToken = getUserAuthTokenByName('Authorization')
+  //     const authToken = getUserAuthToken()
 
   //     let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
   //     console.log('shortcode saved for vote:')
@@ -348,7 +356,7 @@ Webflow.push(function () {
               'Wrong phone number, please register by the link below'
             )
           } else {
-            $('#register-error').text('There is no account associated with this phone number. Please try again or register below')
+            $('#register-error').text('Wrong phone number, please register by the link below')
           }
           $('#register-error').show()
           $('#register-submit').val('Submit')
@@ -411,6 +419,7 @@ Webflow.push(function () {
       code: code
     }
     sendData = JSON.stringify(sendData)
+
     $.ajax({
       url:
         'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/signup/verify',
@@ -700,7 +709,7 @@ $(document).ready(function () {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes',
-        headers: { Authorization: getUserAuthTokenByName('Authorization') },
+        headers: { Authorization: getUserAuthToken() },
         success: function (result) {
           var votePosts = result.data.posts
 
