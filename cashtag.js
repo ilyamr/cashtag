@@ -216,7 +216,7 @@ function getDate (authToken) {
           $('#tune-in-date').find('span').find('strong').text(new Date(result.data).toString().split('GMT')[0]);
           $('#tune-in-date').show(500);
 
-        removeVotingLocalStorageData()
+        //removeVotingLocalStorageData()
 
         window.localStorage.setItem('tune', result.data)
       } else {
