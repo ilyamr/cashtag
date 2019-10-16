@@ -17,6 +17,8 @@ $(document).ready(function () {
   }
 })
 
+console.log('fdsf')
+
 // $('.w-container ').css('max-width', '1115px');
 
 if ($('#login-link').text().length > 20) {
