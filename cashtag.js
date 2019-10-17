@@ -344,16 +344,7 @@ Webflow.push(function () {
           $('#register-submit').val('Submit')
         }
         if (result.error) {
-          console.log(result.message)
-          if (result.message.includes('wrong phone')) {
-            $('#register-error').text(
-              'Wrong phone number, please register by the link below'
-            )
-          } else {
-            $('#register-error').text('Wrong phone number, please register by the link below')
-          }
-          $('#register-error').show()
-          $('#register-submit').val('Submit')
+          $('#register-error').text(result.message);
         }
       }
     })
