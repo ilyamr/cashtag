@@ -16,6 +16,26 @@ $(document).ready(function () {
       $('#register-name-input').val(nameVal)
     }
   }
+
+  $("#bronze-tag").click(function() {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $("#third-title-tag").offset().top
+      }, 500);
+  });
+
+  $("#silver-tag").click(function() {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $("#second-title-tag").offset().top
+      }, 500);
+  });
+
+  $("#gold-tag").click(function() {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $("#first-title-tag").offset().top
+      }, 500);
+  });
+
+
 })
 
 // $('.w-container ').css('max-width', '1115px');
@@ -806,7 +826,7 @@ $(document).ready(function () {
     var firstTag = $('#first-title-tag').text()
     var last_likes1 = ''
     var last_shortcode1 = ''
-    var firstTopPostsPageCounter = 1;
+    let firstTopPostsPageCounter = 1;
     function getTopPosts () {
       $.ajax({
         url:
@@ -833,6 +853,7 @@ $(document).ready(function () {
 
                   window.shortcodes1.push(firstTopResult[i].shortcode)
                 }
+
                 var description = $($.parseHTML(firstTopResult[i].description))
                   .text()
                   .split(' ')
@@ -891,13 +912,13 @@ $(document).ready(function () {
           }
         }
       })
-      firstTopPostsPageCounter++;
 
     }
 
     getTopPosts()
     $('#first-top-show-more').click(function () {
       $('#first-top-show-more').text('Loading...')
+      firstTopPostsPageCounter++;
       getTopPosts()
     })
 
@@ -995,13 +1016,13 @@ $(document).ready(function () {
     var secondTag = $('#second-title-tag').text()
     var last_likes2 = ''
     var last_shortcode2 = ''
+    var secondTopPostsPageCounter = 1;
     function getTopPosts () {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
           secondTag +
-          '/top?count=3&page='+(window.shortcodes2.length/3 + 1)+
-          '&exclude=' + window.shortcodes2.join(','),
+          '/top?count=3&page='+secondTopPostsPageCounter+'&exclude=' + window.shortcodes2.join(','),
         success: function (result) {
           secondTopResult = result.data
           console.log(result)
@@ -1013,7 +1034,7 @@ $(document).ready(function () {
             $('#second-top-show-more').text('Show More')
             function showTopPosts () {
               $.each(secondTopResult, function (i, e) {
-                if(i<3){
+                if(secondTopPostsPageCounter<2){
                   window.shortcodes2.push(secondTopResult[i].shortcode)
                 }
                 var description = $($.parseHTML(secondTopResult[i].description))
@@ -1077,6 +1098,7 @@ $(document).ready(function () {
     getTopPosts()
     $('#second-top-show-more').click(function () {
       $('#second-top-show-more').text('Loading...')
+      secondTopPostsPageCounter++;
       getTopPosts()
     })
 
@@ -1172,12 +1194,13 @@ $(document).ready(function () {
     var thirdTag = $('#third-title-tag').text()
     var last_likes3 = ''
     var last_shortcode3 = ''
+    var thirdTopPostsPageCounter = 1;
     function getTopPosts () {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
           thirdTag +
-          '/top?count=3&page='+(window.shortcodes3.length/3 + 1)+
+          '/top?count=3&page='+thirdTopPostsPageCounter+
           '&exclude=' + window.shortcodes3.join(','),
         success: function (result) {
           
@@ -1194,9 +1217,10 @@ $(document).ready(function () {
             $('#third-top-show-more').text('Show More')
             function showTopPosts () {
               $.each(thirdTopResult, function (i, e) {
-                if(i<3){
+                if(thirdTopPostsPageCounter<2){
                   window.shortcodes3.push(thirdTopResult[i].shortcode)
                 }
+
                 var description = $($.parseHTML(thirdTopResult[i].description))
                   .text()
                   .split(' ')
@@ -1258,6 +1282,7 @@ $(document).ready(function () {
     getTopPosts()
     $('#third-top-show-more').click(function () {
       $('#third-top-show-more').text('Loading...')
+      thirdTopPostsPageCounter++;
       getTopPosts()
     })
 
