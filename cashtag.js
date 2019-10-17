@@ -281,32 +281,27 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
     success: function (result) {
       console.log('result', result)
       if (result.data) {
-        console.log('vote result data')
-        console.log(result.data.isVotedByUserBefore)
-        $('#finish-date')
-          .last()
-          .find('span')
-          .find('.small')
-          .text(convertUtcDate(result.data.contestFinishAt))
 
         if (result.data.isVotedByUserBefore && location.href.includes('login-vote')) {
           $('#success-wrapper')
             .find('.registersuccess__thanks')
             .first()
             .text("You've already voted!")
-          //   console.log($(".registersuccess__thanks").first().find('strong'))
-          //   $(".registersuccess__thanks").first().find('strong').text("You've already voted!");
-          //   $(".registersuccess__thanks").last().hide();
-
           return;
+        }
+        else{
+          $('#finish-date')
+          .last()
+          .find('span')
+          .find('.small')
+          .text(convertUtcDate(result.data.contestFinishAt))
         }
 
         removeVotingLocalStorageData()
 
-        if (!location.href.includes('login-vote')) {
-          window.location = '/authorized-vote';
-        }
-
+        // if (!location.href.includes('login')) {
+        //   window.location = '/authorized-vote';
+        // }
 
       } else {
         shouldShowAlerts ? alert('Voting error!') : null
@@ -463,6 +458,7 @@ Webflow.push(function () {
 
           if (result.data.user.username !== 'undefined') {
             window.localStorage.setItem('username', result.data.user.username)
+            $('#register-username').text(result.data.user.username+'.')
           }
 
           if (
@@ -796,8 +792,9 @@ $(document).ready(function () {
                     'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
 
-                if (result.data.isVoteEnabled) {
-                  $('#votes-tag-top .loadingposts').remove()
+                // if (result.data.isVoteEnabled) {
+                  if (true) {
+                    $('#votes-tag-top .loadingposts').remove()
 
                   $('#votes-title1').fadeIn(500).css({
                     display: 'flex',
