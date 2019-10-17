@@ -806,12 +806,13 @@ $(document).ready(function () {
     var firstTag = $('#first-title-tag').text()
     var last_likes1 = ''
     var last_shortcode1 = ''
+    var firstTopPostsPageCounter = 1;
     function getTopPosts () {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
           firstTag +
-          '/top?count=3&page='+(window.shortcodes1.length/3 + 1)+
+          '/top?count=3&page='+firstTopPostsPageCounter+
           '&exclude=' + window.shortcodes1.join(','),
         success: function (result) {
           firstTopResult = result.data
@@ -824,7 +825,12 @@ $(document).ready(function () {
             function showTopPosts () {
               $.each(firstTopResult, function (i, e) {
 
-                if(i<3){
+                console.log('firstTopPostsPageCounter: ', firstTopPostsPageCounter);
+                
+
+                if(firstTopPostsPageCounter<2){
+                console.log('firstTopResult[i].shortcode', firstTopResult[i].shortcode);
+
                   window.shortcodes1.push(firstTopResult[i].shortcode)
                 }
                 var description = $($.parseHTML(firstTopResult[i].description))
@@ -871,6 +877,7 @@ $(document).ready(function () {
                     likes +
                     '</div></div></div></a>'
                 )
+
               })
             }
             showTopPosts()
@@ -884,6 +891,8 @@ $(document).ready(function () {
           }
         }
       })
+      firstTopPostsPageCounter++;
+
     }
 
     getTopPosts()
