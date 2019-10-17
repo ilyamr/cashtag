@@ -1,4 +1,6 @@
 $(document).ready(function () {
+  console.log('test');
+  
   if ($('body.register').length > 0) {
     $('#register-wrapper').show()
     $('#confirm-wrapper').hide()
@@ -344,7 +346,9 @@ Webflow.push(function () {
           $('#register-submit').val('Submit')
         }
         if (result.error) {
-          $('#register-error').text(result.message);
+          $('#register-error').text(result.message)
+          $('#register-error').show()
+          $('#register-submit').val('Submit')
         }
       }
     })
