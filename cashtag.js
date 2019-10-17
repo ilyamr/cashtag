@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  console.log('ca$h');
+  console.log('test');
   
   if ($('body.register').length > 0) {
     $('#register-wrapper').show()
@@ -346,7 +346,7 @@ Webflow.push(function () {
           $('#register-submit').val('Submit')
         }
         if (result.error) {
-         $('#register-error').text(result.message)
+          $('#register-error').text(result.message)
           $('#register-error').show()
           $('#register-submit').val('Submit')
         }
@@ -890,94 +890,94 @@ $(document).ready(function () {
       getTopPosts()
     })
 
-    var last_time1 = ''
-    var last_shortcode11 = ''
-    function getRecentPosts () {
-      $.ajax({
-        url:
-          'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
-          firstTag +
-          '/fresh?last_photo_timestamp=' +
-          last_time1 +
-          '&last_shortcode=' +
-          last_shortcode11,
-        success: function (result) {
-          firstRecentResult = result.data
-          if (firstRecentResult.length > 0) {
-            var last = result.last
-            last_time1 = last.photo_timestamp
-            last_shortcode11 = last.shortcode
-            $('#first-tag-recent .loadingposts').remove()
-            $('#first-recent-show-more').text('Show More')
-            function showRecentPosts () {
-              const btns = $('.div-block-3').children()
-              console.log(btns)
-              $.each(firstRecentResult, function (i, e) {
-                var description = $(
-                  $.parseHTML(firstRecentResult[i].description)
-                )
-                  .text()
-                  .split(' ')
-                  .map(word => {
-                    if (word.startsWith('#')) {
-                      return `<span style="color: blue">${word}</span>`
-                    }
-                    return word
-                  })
-                  .join(' ')
-                if (firstRecentResult[i].likes) {
-                  var likes = firstRecentResult[i].likes + ' likes'
-                } else {
-                  var likes = '0 likes'
-                }
-                var photo = firstRecentResult[i].display_url
-                var photo2 = firstRecentResult[i].photo_link_640x640
-                var url = firstRecentResult[i].post_url
-                if (firstRecentResult[i].username) {
-                  var username = firstRecentResult[i].username
-                } else {
-                  var username = ''
-                }
-                if (firstRecentResult[i].profile_pic_url) {
-                  var avatar = firstRecentResult[i].profile_pic_url
-                } else {
-                  var avatar =
-                    'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
-                }
-                $('#first-tag-recent').append(
-                  '<a class="instacard" href="' +
-                    url +
-                    '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
-                    avatar +
-                    ')"></div><div class="instacard__name">' +
-                    username +
-                    '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
-                    photo +
-                    '), url(' +
-                    photo2 +
-                    ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto""><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
-                    likes +
-                    '</div></div></div></a>'
-                )
-              })
-            }
-            showRecentPosts()
-          } else {
-            $('#first-recent-show-more').css({
-              border: 'none',
-              width: '150px',
-              pointerEvents: 'none'
-            })
-            $('#first-recent-show-more').text('All For Now')
-          }
-        }
-      })
-    }
-    getRecentPosts()
-    $('#first-recent-show-more').click(function () {
-      $('#first-recent-show-more').text('Loading...')
-      getRecentPosts()
-    })
+    // var last_time1 = ''
+    // var last_shortcode11 = ''
+    // function getRecentPosts () {
+    //   $.ajax({
+    //     url:
+    //       'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
+    //       firstTag +
+    //       '/fresh?last_photo_timestamp=' +
+    //       last_time1 +
+    //       '&last_shortcode=' +
+    //       last_shortcode11,
+    //     success: function (result) {
+    //       firstRecentResult = result.data
+    //       if (firstRecentResult.length > 0) {
+    //         var last = result.last
+    //         last_time1 = last.photo_timestamp
+    //         last_shortcode11 = last.shortcode
+    //         $('#first-tag-recent .loadingposts').remove()
+    //         $('#first-recent-show-more').text('Show More')
+    //         function showRecentPosts () {
+    //           const btns = $('.div-block-3').children()
+    //           console.log(btns)
+    //           $.each(firstRecentResult, function (i, e) {
+    //             var description = $(
+    //               $.parseHTML(firstRecentResult[i].description)
+    //             )
+    //               .text()
+    //               .split(' ')
+    //               .map(word => {
+    //                 if (word.startsWith('#')) {
+    //                   return `<span style="color: blue">${word}</span>`
+    //                 }
+    //                 return word
+    //               })
+    //               .join(' ')
+    //             if (firstRecentResult[i].likes) {
+    //               var likes = firstRecentResult[i].likes + ' likes'
+    //             } else {
+    //               var likes = '0 likes'
+    //             }
+    //             var photo = firstRecentResult[i].display_url
+    //             var photo2 = firstRecentResult[i].photo_link_640x640
+    //             var url = firstRecentResult[i].post_url
+    //             if (firstRecentResult[i].username) {
+    //               var username = firstRecentResult[i].username
+    //             } else {
+    //               var username = ''
+    //             }
+    //             if (firstRecentResult[i].profile_pic_url) {
+    //               var avatar = firstRecentResult[i].profile_pic_url
+    //             } else {
+    //               var avatar =
+    //                 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
+    //             }
+    //             $('#first-tag-recent').append(
+    //               '<a class="instacard" href="' +
+    //                 url +
+    //                 '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
+    //                 avatar +
+    //                 ')"></div><div class="instacard__name">' +
+    //                 username +
+    //                 '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+    //                 photo +
+    //                 '), url(' +
+    //                 photo2 +
+    //                 ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto""><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
+    //                 likes +
+    //                 '</div></div></div></a>'
+    //             )
+    //           })
+    //         }
+    //         showRecentPosts()
+    //       } else {
+    //         $('#first-recent-show-more').css({
+    //           border: 'none',
+    //           width: '150px',
+    //           pointerEvents: 'none'
+    //         })
+    //         $('#first-recent-show-more').text('All For Now')
+    //       }
+    //     }
+    //   })
+    // }
+    // getRecentPosts()
+    // $('#first-recent-show-more').click(function () {
+    //   $('#first-recent-show-more').text('Loading...')
+    //   getRecentPosts()
+    // })
   }
 
   if ($('body.index-page').length > 0) {
@@ -1067,92 +1067,92 @@ $(document).ready(function () {
       getTopPosts()
     })
 
-    var last_time2 = ''
-    var last_shortcode22 = ''
-    function getRecentPosts () {
-      $.ajax({
-        url:
-          'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
-          secondTag +
-          '/fresh?last_photo_timestamp=' +
-          last_time2 +
-          '&last_shortcode=' +
-          last_shortcode22,
-        success: function (result) {
-          secondRecentResult = result.data
-          if (secondRecentResult.length > 0) {
-            var last = result.last
-            last_time2 = last.photo_timestamp
-            last_shortcode22 = last.shortcode
-            $('#second-tag-recent .loadingposts').remove()
-            $('#second-recent-show-more').text('Show More')
-            function showRecentPosts () {
-              $.each(secondRecentResult, function (i, e) {
-                var description = $(
-                  $.parseHTML(secondRecentResult[i].description)
-                )
-                  .text()
-                  .split(' ')
-                  .map(word => {
-                    if (word.startsWith('#')) {
-                      return `<span style="color: blue">${word}</span>`
-                    }
-                    return word
-                  })
-                  .join(' ')
-                if (secondRecentResult[i].likes) {
-                  var likes = secondRecentResult[i].likes + ' likes'
-                } else {
-                  var likes = '0 likes'
-                }
-                var photo = secondRecentResult[i].display_url
-                var photo2 = secondRecentResult[i].photo_link_640x640
-                var url = secondRecentResult[i].post_url
-                if (secondRecentResult[i].username) {
-                  var username = secondRecentResult[i].username
-                } else {
-                  var username = ''
-                }
-                if (secondRecentResult[i].profile_pic_url) {
-                  var avatar = secondRecentResult[i].profile_pic_url
-                } else {
-                  var avatar =
-                    'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
-                }
-                $('#second-tag-recent').append(
-                  '<a class="instacard" href="' +
-                    url +
-                    '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
-                    avatar +
-                    ')"></div><div class="instacard__name">' +
-                    username +
-                    '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
-                    photo +
-                    '), url(' +
-                    photo2 +
-                    ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto""><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
-                    likes +
-                    '</div></div></div></a>'
-                )
-              })
-            }
-            showRecentPosts()
-          } else {
-            $('#second-recent-show-more').css({
-              border: 'none',
-              width: '150px',
-              pointerEvents: 'none'
-            })
-            $('#second-recent-show-more').text('All For Now')
-          }
-        }
-      })
-    }
-    getRecentPosts()
-    $('#second-recent-show-more').click(function () {
-      $('#second-recent-show-more').text('Loading...')
-      getRecentPosts()
-    })
+    // var last_time2 = ''
+    // var last_shortcode22 = ''
+    // function getRecentPosts () {
+    //   $.ajax({
+    //     url:
+    //       'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
+    //       secondTag +
+    //       '/fresh?last_photo_timestamp=' +
+    //       last_time2 +
+    //       '&last_shortcode=' +
+    //       last_shortcode22,
+    //     success: function (result) {
+    //       secondRecentResult = result.data
+    //       if (secondRecentResult.length > 0) {
+    //         var last = result.last
+    //         last_time2 = last.photo_timestamp
+    //         last_shortcode22 = last.shortcode
+    //         $('#second-tag-recent .loadingposts').remove()
+    //         $('#second-recent-show-more').text('Show More')
+    //         function showRecentPosts () {
+    //           $.each(secondRecentResult, function (i, e) {
+    //             var description = $(
+    //               $.parseHTML(secondRecentResult[i].description)
+    //             )
+    //               .text()
+    //               .split(' ')
+    //               .map(word => {
+    //                 if (word.startsWith('#')) {
+    //                   return `<span style="color: blue">${word}</span>`
+    //                 }
+    //                 return word
+    //               })
+    //               .join(' ')
+    //             if (secondRecentResult[i].likes) {
+    //               var likes = secondRecentResult[i].likes + ' likes'
+    //             } else {
+    //               var likes = '0 likes'
+    //             }
+    //             var photo = secondRecentResult[i].display_url
+    //             var photo2 = secondRecentResult[i].photo_link_640x640
+    //             var url = secondRecentResult[i].post_url
+    //             if (secondRecentResult[i].username) {
+    //               var username = secondRecentResult[i].username
+    //             } else {
+    //               var username = ''
+    //             }
+    //             if (secondRecentResult[i].profile_pic_url) {
+    //               var avatar = secondRecentResult[i].profile_pic_url
+    //             } else {
+    //               var avatar =
+    //                 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
+    //             }
+    //             $('#second-tag-recent').append(
+    //               '<a class="instacard" href="' +
+    //                 url +
+    //                 '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
+    //                 avatar +
+    //                 ')"></div><div class="instacard__name">' +
+    //                 username +
+    //                 '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+    //                 photo +
+    //                 '), url(' +
+    //                 photo2 +
+    //                 ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto""><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
+    //                 likes +
+    //                 '</div></div></div></a>'
+    //             )
+    //           })
+    //         }
+    //         showRecentPosts()
+    //       } else {
+    //         $('#second-recent-show-more').css({
+    //           border: 'none',
+    //           width: '150px',
+    //           pointerEvents: 'none'
+    //         })
+    //         $('#second-recent-show-more').text('All For Now')
+    //       }
+    //     }
+    //   })
+    // }
+    // getRecentPosts()
+    // $('#second-recent-show-more').click(function () {
+    //   $('#second-recent-show-more').text('Loading...')
+    //   getRecentPosts()
+    // })
   }
 
   if ($('body.index-page').length > 0) {
@@ -1246,92 +1246,92 @@ $(document).ready(function () {
       getTopPosts()
     })
 
-    var last_time3 = ''
-    var last_shortcode33 = ''
-    function getRecentPosts () {
-      $.ajax({
-        url:
-          'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
-          thirdTag +
-          '/fresh?last_photo_timestamp=' +
-          last_time3 +
-          '&last_shortcode=' +
-          last_shortcode33,
-        success: function (result) {
-          thirdRecentResult = result.data
-          console.log(result);
-          if (thirdRecentResult.length > 0) {
-            var last = result.last
-            last_time3 = last.photo_timestamp
-            last_shortcode33 = last.shortcode
-            $('#third-tag-recent .loadingposts').remove()
-            $('#third-recent-show-more').text('Show More')
-            function showRecentPosts () {
-              $.each(thirdRecentResult, function (i, e) {
-                var description = $(
-                  $.parseHTML(thirdRecentResult[i].description)
-                )
-                  .text()
-                  .split(' ')
-                  .map(word => {
-                    if (word.startsWith('#')) {
-                      return `<span style="color: blue">${word}</span>`
-                    }
-                    return word
-                  })
-                  .join(' ')
-                if (thirdRecentResult[i].likes) {
-                  var likes = thirdRecentResult[i].likes + ' likes'
-                } else {
-                  var likes = '0 likes'
-                }
-                var photo = thirdRecentResult[i].display_url
-                var photo2 = thirdRecentResult[i].photo_link_640x640
-                var url = thirdRecentResult[i].post_url
-                if (thirdRecentResult[i].username) {
-                  var username = thirdRecentResult[i].username
-                } else {
-                  var username = ''
-                }
-                if (thirdRecentResult[i].profile_pic_url) {
-                  var avatar = thirdRecentResult[i].profile_pic_url
-                } else {
-                  var avatar =
-                    'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
-                }
-                $('#third-tag-recent').append(
-                  '<a class="instacard" href="' +
-                    url +
-                    '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
-                    avatar +
-                    ')"></div><div class="instacard__name">' +
-                    username +
-                    '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
-                    photo +
-                    '), url(' +
-                    photo2 +
-                    ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto""><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
-                    likes +
-                    '</div></div></div></a>'
-                )
-              })
-            }
-            showRecentPosts()
-          } else {
-            $('#third-recent-show-more').css({
-              border: 'none',
-              width: '150px',
-              pointerEvents: 'none'
-            })
-            $('#third-recent-show-more').text('All For Now')
-          }
-        }
-      })
-    }
-    getRecentPosts()
-    $('#third-recent-show-more').click(function () {
-      $('#third-recent-show-more').text('Loading...')
-      getRecentPosts()
-    })
+    // var last_time3 = ''
+    // var last_shortcode33 = ''
+    // function getRecentPosts () {
+    //   $.ajax({
+    //     url:
+    //       'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
+    //       thirdTag +
+    //       '/fresh?last_photo_timestamp=' +
+    //       last_time3 +
+    //       '&last_shortcode=' +
+    //       last_shortcode33,
+    //     success: function (result) {
+    //       thirdRecentResult = result.data
+    //       console.log(result);
+    //       if (thirdRecentResult.length > 0) {
+    //         var last = result.last
+    //         last_time3 = last.photo_timestamp
+    //         last_shortcode33 = last.shortcode
+    //         $('#third-tag-recent .loadingposts').remove()
+    //         $('#third-recent-show-more').text('Show More')
+    //         function showRecentPosts () {
+    //           $.each(thirdRecentResult, function (i, e) {
+    //             var description = $(
+    //               $.parseHTML(thirdRecentResult[i].description)
+    //             )
+    //               .text()
+    //               .split(' ')
+    //               .map(word => {
+    //                 if (word.startsWith('#')) {
+    //                   return `<span style="color: blue">${word}</span>`
+    //                 }
+    //                 return word
+    //               })
+    //               .join(' ')
+    //             if (thirdRecentResult[i].likes) {
+    //               var likes = thirdRecentResult[i].likes + ' likes'
+    //             } else {
+    //               var likes = '0 likes'
+    //             }
+    //             var photo = thirdRecentResult[i].display_url
+    //             var photo2 = thirdRecentResult[i].photo_link_640x640
+    //             var url = thirdRecentResult[i].post_url
+    //             if (thirdRecentResult[i].username) {
+    //               var username = thirdRecentResult[i].username
+    //             } else {
+    //               var username = ''
+    //             }
+    //             if (thirdRecentResult[i].profile_pic_url) {
+    //               var avatar = thirdRecentResult[i].profile_pic_url
+    //             } else {
+    //               var avatar =
+    //                 'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
+    //             }
+    //             $('#third-tag-recent').append(
+    //               '<a class="instacard" href="' +
+    //                 url +
+    //                 '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
+    //                 avatar +
+    //                 ')"></div><div class="instacard__name">' +
+    //                 username +
+    //                 '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+    //                 photo +
+    //                 '), url(' +
+    //                 photo2 +
+    //                 ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto""><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
+    //                 likes +
+    //                 '</div></div></div></a>'
+    //             )
+    //           })
+    //         }
+    //         showRecentPosts()
+    //       } else {
+    //         $('#third-recent-show-more').css({
+    //           border: 'none',
+    //           width: '150px',
+    //           pointerEvents: 'none'
+    //         })
+    //         $('#third-recent-show-more').text('All For Now')
+    //       }
+    //     }
+    //   })
+    // }
+    // getRecentPosts()
+    // $('#third-recent-show-more').click(function () {
+    //   $('#third-recent-show-more').text('Loading...')
+    //   getRecentPosts()
+    // })
   }
 })
