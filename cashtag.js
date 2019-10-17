@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  console.log('test');
   
   if ($('body.register').length > 0) {
     $('#register-wrapper').show()
