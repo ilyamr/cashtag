@@ -250,7 +250,7 @@ function voteForPost (shortcode, shouldShowAlerts = false, authToken) {
           .find('.small')
           .text(result.data.contestFinishAt)
 
-        if (result.data.isVotedByUserBefore) {
+        if (result.data.isVotedByUserBefore && location.href.includes('login-vote')) {
           $('#success-wrapper')
             .find('.registersuccess__thanks')
             .first()
@@ -1172,6 +1172,11 @@ $(document).ready(function () {
           '/top?count=3&page='+(window.shortcodes3.length/3 + 1)+
           '&exclude=' + window.shortcodes3.join(','),
         success: function (result) {
+          
+    console.log('https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/posts/' +
+          thirdTag +
+          `/top?count=3&page=${window.shortcodes3.length / 3 + 1}` +
+          '&exclude=' + window.shortcodes3.join(','))
           thirdTopResult = result.data
           if (thirdTopResult.length > 0) {
             var last = result.data[result.data.length - 1]
