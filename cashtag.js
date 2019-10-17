@@ -209,10 +209,10 @@ function getDeadlineDate () {
       if (result.data) {
         console.log('contests/end')
         console.log(result.data)
+        $('#deadline').fadeIn(500)
         $('#finish-date')
-          .show()
+          .fadeIn(500)
           .text(convertUtcDate(result.data))
-        $('#deadline').show()
       }
     }
   })
@@ -303,7 +303,10 @@ function voteForPost (shortcode, shouldShowAlerts = false, authToken) {
 
         removeVotingLocalStorageData()
 
-        window.location='/authorized-vote';
+        if(!location.href.includes('login-vote')){
+          window.location='/authorized-vote';
+        }
+
 
       } else {
         shouldShowAlerts ? alert('Voting error!') : null
@@ -761,7 +764,6 @@ $(document).ready(function () {
               console.log(error)
             }
 
-            $('#votes-tag-top .loadingposts').remove()
             function showTopPosts () {
               $.each(votePosts, function (i, e) {
                 var description = $($.parseHTML(votePosts[i].description))
@@ -793,28 +795,34 @@ $(document).ready(function () {
                   var avatar =
                     'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
-                // $('#votes-tag-top').css({
-                //   display: 'flex',
-                //   'flex-wrap': 'wrap',
-                //   'justify-content': 'space-around'
-                // })
-                // $('#votes-tag-top').append(
-                //   '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="instacard" href="' +
-                //     url +
-                //     '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
-                //     avatar +
-                //     ')"></div><div class="instacard__name">' +
-                //     username +
-                //     '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
-                //     photo +
-                //     '), url(' +
-                //     photo2 +
-                //     ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
-                //     likes +
-                //     '</div></div></div></a>' +
-                //     `<a href='#' class='winform__submit winform__submitvote w-button' id=submit-vote-${++i}>SUBMIT MY VOTE</a>` +
-                //     '</div>'
-                // )
+
+                if(result.data.isVoteEnabled) {
+            $('#votes-tag-top .loadingposts').remove()
+
+                    $('#votes-tag-top').css({
+                      display: 'flex',
+                      'flex-wrap': 'wrap',
+                      'justify-content': 'space-around'
+                    })
+                    $('#votes-tag-top').append(
+                      '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="instacard" href="' +
+                        url +
+                        '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
+                        avatar +
+                        ')"></div><div class="instacard__name">' +
+                        username +
+                        '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                        photo +
+                        '), url(' +
+                        photo2 +
+                        ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
+                        likes +
+                        '</div></div></div></a>' +
+                        `<a href='#' class='winform__submit winform__submitvote w-button' id=submit-vote-${++i}>SUBMIT MY VOTE</a>` +
+                        '</div>'
+                    )
+                  }
+
               })
             }
             showTopPosts()
