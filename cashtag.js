@@ -823,7 +823,10 @@ $(document).ready(function () {
             $('#first-top-show-more').text('Show More')
             function showTopPosts () {
               $.each(firstTopResult, function (i, e) {
-                window.shortcodes1.push(firstTopResult[i].shortcode)
+
+                if(i<3){
+                  window.shortcodes1.push(firstTopResult[i].shortcode)
+                }
                 var description = $($.parseHTML(firstTopResult[i].description))
                   .text()
                   .split(' ')
@@ -1001,7 +1004,9 @@ $(document).ready(function () {
             $('#second-top-show-more').text('Show More')
             function showTopPosts () {
               $.each(secondTopResult, function (i, e) {
-                window.shortcodes2.push(secondTopResult[i].shortcode)
+                if(i<3){
+                  window.shortcodes2.push(secondTopResult[i].shortcode)
+                }
                 var description = $($.parseHTML(secondTopResult[i].description))
                   .text()
                   .split(' ')
@@ -1180,7 +1185,9 @@ $(document).ready(function () {
             $('#third-top-show-more').text('Show More')
             function showTopPosts () {
               $.each(thirdTopResult, function (i, e) {
-                window.shortcodes3.push(thirdTopResult[i].shortcode)
+                if(i<3){
+                  window.shortcodes3.push(thirdTopResult[i].shortcode)
+                }
                 var description = $($.parseHTML(thirdTopResult[i].description))
                   .text()
                   .split(' ')
