@@ -80,7 +80,7 @@ function assignVoteButtonClickEvents(voteButtonIds) {
 
       switch (authToken) {
         case undefined:
-          window.location = '/login-vote'
+          window.location = '/register'
         default:
           voteForPost(shortCodes[i], true, authToken)
       }
