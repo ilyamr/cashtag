@@ -792,8 +792,7 @@ $(document).ready(function () {
                     'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
 
-                // if (result.data.isVoteEnabled) {
-                  if (true) {
+                if (result.data.isVoteEnabled) {
                     $('#votes-tag-top .loadingposts').remove()
 
                   $('#votes-title1').fadeIn(500).css({
