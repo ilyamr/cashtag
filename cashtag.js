@@ -59,9 +59,17 @@ if ($('#login-link').text().length > 20) {
     .css('color', 'white')
 }
 
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) {
+    return parts.pop().split(";").shift();
+  }
+}
+
 function getUserAuthToken() {
-  return Object.fromEntries(document.cookie.split('; ').map(x => x.split('=')))
-    .Authorization
+
+  return getCookie('Authorization');
 }
 
 var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
