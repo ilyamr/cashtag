@@ -29,19 +29,19 @@ $(document).ready(function () {
 
   $("#bronze-tag").click(function () {
     $([document.documentElement, document.body]).animate({
-      scrollTop: $("#third-title-tag").offset().top
+      scrollTop: $("#third-title-tag").offset().top-24
     }, 500);
   });
 
   $("#silver-tag").click(function () {
     $([document.documentElement, document.body]).animate({
-      scrollTop: $("#second-title-tag").offset().top
+      scrollTop: $("#second-title-tag").offset().top-24
     }, 500);
   });
 
   $("#gold-tag").click(function () {
     $([document.documentElement, document.body]).animate({
-      scrollTop: $("#first-title-tag").offset().top
+      scrollTop: $("#first-title-tag").offset().top-24
     }, 500);
   });
 
