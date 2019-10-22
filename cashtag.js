@@ -91,7 +91,6 @@ function assignVoteButtonClickEvents(voteButtonIds) {
           window.location = '/register'
         default:
           voteForPost(shortCodes[i], true, authToken)
-          window.location = '/authorized-vote'
       }
     })
   }
@@ -234,15 +233,13 @@ function getDeadlineDate() {
         $('#finish-date')
           .fadeIn(500)
           .text(convertUtcDate(result.data))
-        $('#tune-1')
-          .fadeIn(500)
-          .text(convertUtcDate(result.data))
       }
     }
   })
 }
 
 getDeadlineDate()
+        console.log($('#tune-3'))
 
 function getDate(authToken) {
   $('.registersuccess__thanks').hide()
@@ -267,6 +264,15 @@ function getDate(authToken) {
           .find('span')
           .find('.small')
           .after('<br>')
+        
+        $('#tune-1')
+          .fadeIn(500)
+          .text(convertUtcDate(result.data))
+        $('#tune-2')
+          .fadeIn(500)
+          .text(convertUtcDate(result.data))
+        $('#tune-3')
+          .text(convertUtcDate(result.data));
 
         removeVotingLocalStorageData()
 
@@ -281,6 +287,8 @@ function getDate(authToken) {
     }
   })
 }
+
+getDate()
 
 $('#vote-thanks-success').hide();
 
@@ -307,25 +315,20 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
     success: function (result) {
       console.log('result', result)
       if (result.data) {
-
-        if (result.data.isVotedByUserBefore && location.href.includes('login-vote')) {
-          $('#success-wrapper')
-            .find('.registersuccess__thanks')
-            .first()
-            .text("You've already voted!")
-          return;
-        }
-        else{
-          $('#vote-thanks-success').show();
+        console.log(result.data.isVotedByUser)
+        if (result.data.isVotedByUser) {
+          $('#vote-thanks').show();
+        }else {
           $('#finish-date')
           .last()
           .find('span')
           .find('.small')
-          .text(convertUtcDate(result.data.contestFinishAt))
+          .text(convertUtcDate(result.data.contestFinishAt));
+          $('#vote-thanks-success').show();
+          for (let i = 0; i < voteButtonIds.length; i++) {
+            $('#' + voteButtonIds[i]).hide()
+          }
         } 
-        if (result.data.isVotedByUserBefore) {
-          $('#vote-thanks').show();
-        }
 
         removeVotingLocalStorageData()
 
