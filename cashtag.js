@@ -319,12 +319,12 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
         if (result.data.isVotedByUser) {
           $('#vote-thanks').show();
         }else {
-          $('#finish-date')
-          .last()
-          .find('span')
-          .find('.small')
-          .text(convertUtcDate(result.data.contestFinishAt));
           $('#vote-thanks-success').show();
+          $('#finish-date')
+            .last()
+            .find('span')
+            .find('.small')
+            .text(convertUtcDate(result.data.contestFinishAt));
           for (let i = 0; i < voteButtonIds.length; i++) {
             $('#' + voteButtonIds[i]).hide()
           }
