@@ -321,14 +321,14 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
         }else {
           $('#vote-thanks-success').show();
           $('#finish-date')
-          .last()
-          .find('span')
-          .find('.small')
-          .text(convertUtcDate(result.data.contestFinishAt))
+            .last()
+            .find('span')
+            .find('.small')
+            .text(convertUtcDate(result.data.contestFinishAt));
+          for (let i = 0; i < voteButtonIds.length; i++) {
+            $('#' + voteButtonIds[i]).hide()
+          }
         } 
-        for (let i = 0; i < voteButtonIds.length; i++) {
-          $('#' + voteButtonIds[i]).hide()
-        }
 
         removeVotingLocalStorageData()
 
