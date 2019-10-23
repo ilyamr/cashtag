@@ -27,6 +27,10 @@ $(document).ready(function () {
     }
   }
 
+  function delete_cookie( name ) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  }
+
   $("#bronze-tag").click(function () {
     $([document.documentElement, document.body]).animate({
       scrollTop: $("#third-title-tag").offset().top-24
@@ -74,21 +78,19 @@ function getUserAuthToken() {
 
 var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
 
-
 function assignVoteButtonClickEvents(voteButtonIds) {
   for (let i = 0; i < voteButtonIds.length; i++) {
     $('#' + voteButtonIds[i]).click(function () {
       const authToken = getUserAuthToken()
 
-      let shortCodes = JSON.parse(localStorage.getItem('voteShortCodes'))
+      let shortCodes = JSON.parse(getCookie('voteShortCodes'))
       console.log('shortcode saved for vote:')
       console.log(shortCodes[i])
-
-      window.localStorage.setItem('selectedShortCodeForVoting', shortCodes[i])
+      document.cookie = 'selectedShortCodeForVoting=' + shortCodes[i];
 
       switch (authToken) {
         case undefined:
-          window.location = '/register'
+          window.location = '/login'
         default:
           voteForPost(shortCodes[i], true, authToken)
       }
@@ -164,7 +166,7 @@ $('#success-wrapper-vote')
   .find('span')
   .find('.small')
   .text(
-    new Date(window.localStorage.getItem('tune')).toString().split('GMT')[0]
+    new Date(getCookie('tune')).toString().split('GMT')[0]
   )
 
 
@@ -176,14 +178,14 @@ $('#success-wrapper-vote')
   .after('<br>')
 
 function showUserNameInHeader() {
-  console.log(window.localStorage.getItem('username'))
+  console.log(getCookie('username'))
 
   if (getUserAuthToken() !== undefined) {
-    replaceLink($('#login-link'), window.localStorage.getItem('username'), '#')
+    replaceLink($('#login-link'), getCookie('username'), '#')
     replaceLink($('#register-link'), 'LOG OUT', '#')
 
     $('#register-link').click(function () {
-      window.localStorage.removeItem('username')
+      document.cookie = 'username' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       document.cookie =
         'Authorization' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;'
 
@@ -198,8 +200,8 @@ showUserNameInHeader()
 
 
 // window.localStorage.removeItem('username')
-// console.log( window.localStorage.getItem('username'))
-if (getUserAuthToken() !== undefined && window.localStorage.getItem('username') === 'undefined') {
+// console.log( getCookie('username'))
+if (getUserAuthToken() !== undefined && getCookie('username') === 'undefined') {
   $('#login-link').hide();
 }
 
@@ -239,7 +241,6 @@ function getDeadlineDate() {
 }
 
 getDeadlineDate()
-        console.log($('#tune-3'))
 
 function getDate(authToken) {
   $('.registersuccess__thanks').hide()
@@ -273,10 +274,11 @@ function getDate(authToken) {
           .text(convertUtcDate(result.data))
         $('#tune-3')
           .text(convertUtcDate(result.data));
+        $('#deadline-2').show();
 
         removeVotingLocalStorageData()
 
-        window.localStorage.setItem('tune', result.data)
+        document.cookie = 'tune=' + result.data
       } else {
         $('.registersuccess__thanks')
           .last()
@@ -319,15 +321,18 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
         if (result.data.isVotedByUser) {
           $('#vote-thanks').show();
         }else {
-          $('#finish-date')
-          .last()
-          .find('span')
-          .find('.small')
-          .text(convertUtcDate(result.data.contestFinishAt));
           $('#vote-thanks-success').show();
+          $('#finish-date')
+            .last()
+            .find('span')
+            .find('.small')
+            .text(convertUtcDate(result.data.contestFinishAt));
           for (let i = 0; i < voteButtonIds.length; i++) {
             $('#' + voteButtonIds[i]).hide()
           }
+          $('.card-container').each(function() {
+            $(this).css('margin-bottom', '0')
+          });
         } 
 
         removeVotingLocalStorageData()
@@ -336,16 +341,14 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
         //   window.location = '/authorized-vote';
         // }
 
-      } else {
-        shouldShowAlerts ? alert('Voting error!') : null
       }
     }
   })
 }
 
 function removeVotingLocalStorageData() {
-  window.localStorage.removeItem('voteShortCodes')
-  window.localStorage.removeItem('selectedShortCodeForVoting')
+    document.cookie = 'voteShortCodes' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'selectedShortCodeForVoting' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 var Webflow = Webflow || []
@@ -391,7 +394,7 @@ Webflow.push(function () {
       .text('')
       .hide()
     var phone = $('#register-phone-input').val()
-    window.localStorage.setItem('phone', phone);
+    document.cookie = 'phone=' + phone;
     var sendData = {
       phone: phone
     }
@@ -430,7 +433,7 @@ Webflow.push(function () {
     var zip = $('#register-zip').val()
     var firstName = $('#register-firstname').val()
     var lastName = $('#register-lastname').val()
-    window.localStorage.setItem('phone', phone);
+    document.cookie = 'phone=' + phone
     var sendData = {
       phone: phone,
       username: name,
@@ -449,6 +452,7 @@ Webflow.push(function () {
         contentType: 'application/json',
         data: sendData,
         success: function (result) {
+          console.log(result)
           if (result.data && result.data.codeSent) {
             $('#register-wrapper').hide()
             $('#confirm-wrapper').show()
@@ -473,7 +477,7 @@ Webflow.push(function () {
     var name = $('#register-name-input').val()
     var code = $('#register-code-input').val()
     var phone = $('#register-phone-input').val()
-    window.localStorage.setItem('phone', phone);
+    document.cookie = 'phone=' + phone
     var sendData = {
       phone: phone,
       code: code
@@ -493,15 +497,15 @@ Webflow.push(function () {
             ';expires=Mon, 01 Jan 2035 00:00:00 GMT"'
 
           if (result.data.user.username !== 'undefined') {
-            window.localStorage.setItem('username', result.data.user.username)
+            document.cookie = 'username=' + result.data.user.username;
             $('#register-username').text(result.data.user.username+'.')
           }
 
           if (
-            window.localStorage.getItem('selectedShortCodeForVoting') !== null
+            getCookie('selectedShortCodeForVoting') !== null
           ) {
             voteForPost(
-              window.localStorage.getItem('selectedShortCodeForVoting'),
+              getCookie('selectedShortCodeForVoting'),
               false,
               'JWT ' + result.data.access_token
             )
@@ -542,7 +546,7 @@ Webflow.push(function () {
     var name = $('#register-name-input').val()
     var code = $('#register-code-input').val()
     var phone = $('#register-phone-input').val()
-    window.localStorage.setItem('phone', phone);
+    document.cookie = 'phone=' + phone;
     var sendData = {
       phone: phone,
       code: code
@@ -562,14 +566,14 @@ Webflow.push(function () {
             ';expires=Mon, 01 Jan 2035 00:00:00 GMT"'
 
           if (result.data.user.username !== 'undefined') {
-            window.localStorage.setItem('username', result.data.user.username)
+            document.cookie = 'username=' + result.data.user.username
           }
 
           if (
-            window.localStorage.getItem('selectedShortCodeForVoting') !== null
+            getCookie('selectedShortCodeForVoting') !== null
           ) {
             voteForPost(
-              window.localStorage.getItem('selectedShortCodeForVoting'),
+              getCookie('selectedShortCodeForVoting'),
               false,
               'JWT ' + result.data.access_token
             )
@@ -606,7 +610,7 @@ Webflow.push(function () {
       .text('')
       .hide()
     var name = $('#register-name-input').val()
-    var phone = window.localStorage.getItem('phone');
+    var phone = getCookie('phone');
     console.log(phone)
     var age = $('#register-age').val()
     var zip = $('#register-zip').val()
@@ -792,10 +796,7 @@ $(document).ready(function () {
 
           if (votePosts.length > 0) {
             try {
-              window.localStorage.setItem(
-                'voteShortCodes',
-                JSON.stringify(votePosts.map(x => x.shortcode))
-              )
+              document.cookie = 'voteShortCodes=' + JSON.stringify(votePosts.map(x => x.shortcode))
             } catch (error) {
               console.log(error)
             }
