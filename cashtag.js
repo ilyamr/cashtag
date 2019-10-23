@@ -7,30 +7,6 @@ moment.tz.add([
   "America/New_York|EST EDT EWT EPT|50 40 40 40|01010101010101010101010101010101010101010101010102301010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010|-261t0 1nX0 11B0 1nX0 11B0 1qL0 1a10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 RB0 8x40 iv0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1a10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1cN0 1cL0 1cN0 1cL0 s10 1Vz0 LB0 1BX0 1cN0 1fz0 1a10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1a10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|21e6",
 ]);
 
-
-$(document).ready(function () {
-
-  if ($('body.register').length > 0) {
-    $('#register-wrapper').show()
-    $('#confirm-wrapper').hide()
-    $('#success-wrapper').hide()
-    $('#register-update').click(function () {
-      $('#register-wrapper').show()
-      $('#confirm-wrapper').hide()
-      $('#success-wrapper').hide()
-    })
-
-    if (location.search !== '') {
-      var nameVal = location.search
-      nameVal = nameVal.substring(nameVal.indexOf('=') + 1)
-      $('#register-name-input').val(nameVal)
-    }
-  }
-
-  function delete_cookie( name ) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-  }
-
   $("#bronze-tag").click(function () {
     $([document.documentElement, document.body]).animate({
       scrollTop: $("#third-title-tag").offset().top-24
@@ -49,8 +25,6 @@ $(document).ready(function () {
     }, 500);
   });
 
-
-})
 
 // $('.w-container ').css('max-width', '1115px');
 
@@ -131,6 +105,7 @@ $('#register-phone-input').on('input', function (e) {
     }
   }
 })
+
 var reachedEighteen = false;
 $('#register-age').on('input', function (e) {
   $('#register-age').val(
@@ -353,7 +328,6 @@ function removeVotingLocalStorageData() {
 
 var Webflow = Webflow || []
 Webflow.push(function () {
-  $(document).off('submit')
 
   $('#wf-form-HomeReg').submit(function (evt) {
     evt.preventDefault()
