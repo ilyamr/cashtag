@@ -7,6 +7,246 @@ moment.tz.add([
   "America/New_York|EST EDT EWT EPT|50 40 40 40|01010101010101010101010101010101010101010101010102301010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010|-261t0 1nX0 11B0 1nX0 11B0 1qL0 1a10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 RB0 8x40 iv0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1qN0 WL0 1qN0 11z0 1o10 11z0 1o10 11z0 1o10 11z0 1o10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1a10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1cN0 1cL0 1cN0 1cL0 s10 1Vz0 LB0 1BX0 1cN0 1fz0 1a10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 1cN0 1fz0 1a10 1fz0 1cN0 1cL0 1cN0 1cL0 1cN0 1cL0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 14p0 1lb0 14p0 1lb0 14p0 1nX0 11B0 1nX0 11B0 1nX0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|21e6",
 ]);
 
+
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) {
+    return parts.pop().split(";").shift();
+  }
+}
+
+function getUserAuthToken() {
+
+  return getCookie('Authorization');
+}
+
+function assignVoteButtonClickEvents(voteButtonIds) {
+  for (let i = 0; i < voteButtonIds.length; i++) {
+    $('#' + voteButtonIds[i]).click(function () {
+      const authToken = getUserAuthToken()
+
+      let shortCodes = JSON.parse(getCookie('voteShortCodes'))
+      console.log('shortcode saved for vote:')
+      console.log(shortCodes[i])
+      document.cookie = 'selectedShortCodeForVoting=' + shortCodes[i];
+
+      switch (authToken) {
+        case undefined:
+          window.location = '/login'
+        default:
+          voteForPost(shortCodes[i], true, authToken)
+      }
+    })
+  }
+}
+
+function showUserNameInHeader() {
+  console.log(getCookie('username'))
+
+  if (getUserAuthToken() !== undefined) {
+    replaceLink($('#login-link'), getCookie('username'), '#')
+    replaceLink($('#register-link'), 'LOG OUT', '#')
+
+    $('#register-link').click(function () {
+      document.cookie = 'username' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      document.cookie =
+        'Authorization' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+
+      replaceLink($('#login-link'), 'LOG IN', '/login')
+      replaceLink($('#register-link'), 'REGISTER', '/register')
+      location.reload(true)
+    })
+  }
+}
+
+
+function getDate(authToken) {
+  $('.registersuccess__thanks').hide()
+  $.ajax({
+    url:
+      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/enddate',
+    success: function (result) {
+      console.log('result', result)
+      if (result.data !== null) {
+        $('.registersuccess__thanks').show()
+        console.log('vote result data')
+        console.log(result.data)
+
+        $('.registersuccess__thanks')
+          .last()
+          .find('span')
+          .find('.small')
+          .text(convertUtcDate(result.data));
+
+        $('.registersuccess__thanks')
+          .last()
+          .find('span')
+          .find('.small')
+          .after('<br>')
+        
+        $('#tune-1')
+          .fadeIn(500)
+          .text(convertUtcDate(result.data))
+        $('#tune-2')
+          .fadeIn(500)
+          .text(convertUtcDate(result.data))
+        $('#tune-3')
+          .text(convertUtcDate(result.data));
+        $('#deadline-2').show();
+
+        removeVotingLocalStorageData()
+
+        document.cookie = 'tune=' + result.data
+      } else {
+        $('.registersuccess__thanks')
+          .last()
+          .find('span')
+          .find('.small')
+          .hide()
+      }
+    }
+  })
+}
+
+
+function replaceLink(jqueryElement, newName, newLink) {
+  jqueryElement.fadeOut(100, function () {
+    $(this)
+      .text(newName)
+      .fadeIn(100)
+    $(this).attr('href', newLink)
+  })
+}
+
+
+function convertUtcDate(date) {
+  let ETDate = moment.utc(date).tz('America/New_York').format('dddd hA') + ' ET';
+  let PTDate = moment.utc(date).tz('America/Los_Angeles').format('hA') + ' PT';
+  return ETDate + '/' + PTDate;
+}
+
+
+function getDeadlineDate() {
+  $.ajax({
+    url:
+      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/contests/end',
+    success: function (result) {
+      if (result.data) {
+        console.log('contests/end')
+        console.log(result.data)
+        $('#deadline').fadeIn(500)
+        $('#finish-date')
+          .fadeIn(500)
+          .text(convertUtcDate(result.data))
+      }
+    }
+  })
+}
+
+
+function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
+  console.log('voteForPost authToken')
+
+  console.log('authToken')
+  console.log(authToken)
+
+  $.ajax({
+    url:
+      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/' +
+      shortcode +
+      '/vote',
+    method: 'POST',
+    contentType: 'application/json',
+    data: {},
+    beforeSend: function (jqXHR) {
+      jqXHR.setRequestHeader('Authorization', authToken)
+    },
+    xhrFields: {
+      withCredentials: false
+    },
+    success: function (result) {
+      console.log('result', result)
+      if (result.data) {
+        console.log(result.data.isVotedByUser)
+        if (result.data.isVotedByUser) {
+          $('#vote-thanks').show();
+        }else {
+          $('#vote-thanks-success').show();
+          $('#finish-date')
+            .last()
+            .find('span')
+            .find('.small')
+            .text(convertUtcDate(result.data.contestFinishAt));
+          for (let i = 0; i < voteButtonIds.length; i++) {
+            $('#' + voteButtonIds[i]).hide()
+          }
+          $('.card-container').each(function() {
+            $(this).css('margin-bottom', '0')
+          });
+        } 
+
+        removeVotingLocalStorageData()
+
+        // if (!location.href.includes('login')) {
+        //   window.location = '/authorized-vote';
+        // }
+
+      }
+    }
+  })
+}
+
+function removeVotingLocalStorageData() {
+    document.cookie = 'voteShortCodes' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'selectedShortCodeForVoting' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+
+function startTimer() {
+  var getVal = $('#hidden-time').text()
+
+  if (getVal.length > 0) {
+    var countDownDate = new Date(getVal).getTime()
+    var x = setInterval(function () {
+      var now = new Date().getTime()
+      var distance = countDownDate - now
+      // var hours = parseInt((distance / (1000 * 60 * 60)) % 24)
+      var hours = parseInt(distance / (1000 * 60 * 60))
+      if (hours < 10) {
+        hours = '0' + hours
+      }
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000)
+      if (seconds < 10) {
+        seconds = '0' + seconds
+      }
+
+      if (document.getElementById('time')) {
+        document.getElementById('time').innerHTML =
+          hours + ':' + minutes + ':' + seconds
+        if (distance < 0) {
+          clearInterval(x)
+          document.getElementById('time').innerHTML = '00:00:00'
+        }
+      }
+    }, 1000)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
   $("#bronze-tag").click(function () {
     $([document.documentElement, document.body]).animate({
       scrollTop: $("#third-title-tag").offset().top-24
@@ -37,40 +277,11 @@ if ($('#login-link').text().length > 20) {
     .css('color', 'white')
 }
 
-function getCookie(name) {
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) {
-    return parts.pop().split(";").shift();
-  }
-}
 
-function getUserAuthToken() {
-
-  return getCookie('Authorization');
-}
 
 var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
 
-function assignVoteButtonClickEvents(voteButtonIds) {
-  for (let i = 0; i < voteButtonIds.length; i++) {
-    $('#' + voteButtonIds[i]).click(function () {
-      const authToken = getUserAuthToken()
 
-      let shortCodes = JSON.parse(getCookie('voteShortCodes'))
-      console.log('shortcode saved for vote:')
-      console.log(shortCodes[i])
-      document.cookie = 'selectedShortCodeForVoting=' + shortCodes[i];
-
-      switch (authToken) {
-        case undefined:
-          window.location = '/login'
-        default:
-          voteForPost(shortCodes[i], true, authToken)
-      }
-    })
-  }
-}
 
 
 $('#register-phone-input').on('input', function (e) {
@@ -152,24 +363,7 @@ $('#success-wrapper-vote')
   .find('.small')
   .after('<br>')
 
-function showUserNameInHeader() {
-  console.log(getCookie('username'))
 
-  if (getUserAuthToken() !== undefined) {
-    replaceLink($('#login-link'), getCookie('username'), '#')
-    replaceLink($('#register-link'), 'LOG OUT', '#')
-
-    $('#register-link').click(function () {
-      document.cookie = 'username' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-      document.cookie =
-        'Authorization' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-
-      replaceLink($('#login-link'), 'LOG IN', '/login')
-      replaceLink($('#register-link'), 'REGISTER', '/register')
-      location.reload(true)
-    })
-  }
-}
 
 showUserNameInHeader()
 
@@ -180,151 +374,17 @@ if (getUserAuthToken() !== undefined && getCookie('username') === 'undefined') {
   $('#login-link').hide();
 }
 
-function replaceLink(jqueryElement, newName, newLink) {
-  jqueryElement.fadeOut(100, function () {
-    $(this)
-      .text(newName)
-      .fadeIn(100)
-    $(this).attr('href', newLink)
-  })
-}
 
-
-function convertUtcDate(date) {
-  let ETDate = moment.utc(date).tz('America/New_York').format('dddd hA') + ' ET';
-  let PTDate = moment.utc(date).tz('America/Los_Angeles').format('hA') + ' PT';
-  return ETDate + '/' + PTDate;
-}
 
 
 $('#deadline').hide()
-function getDeadlineDate() {
-  $.ajax({
-    url:
-      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/contests/end',
-    success: function (result) {
-      if (result.data) {
-        console.log('contests/end')
-        console.log(result.data)
-        $('#deadline').fadeIn(500)
-        $('#finish-date')
-          .fadeIn(500)
-          .text(convertUtcDate(result.data))
-      }
-    }
-  })
-}
 
 getDeadlineDate()
-
-function getDate(authToken) {
-  $('.registersuccess__thanks').hide()
-  $.ajax({
-    url:
-      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/enddate',
-    success: function (result) {
-      console.log('result', result)
-      if (result.data !== null) {
-        $('.registersuccess__thanks').show()
-        console.log('vote result data')
-        console.log(result.data)
-
-        $('.registersuccess__thanks')
-          .last()
-          .find('span')
-          .find('.small')
-          .text(convertUtcDate(result.data));
-
-        $('.registersuccess__thanks')
-          .last()
-          .find('span')
-          .find('.small')
-          .after('<br>')
-        
-        $('#tune-1')
-          .fadeIn(500)
-          .text(convertUtcDate(result.data))
-        $('#tune-2')
-          .fadeIn(500)
-          .text(convertUtcDate(result.data))
-        $('#tune-3')
-          .text(convertUtcDate(result.data));
-        $('#deadline-2').show();
-
-        removeVotingLocalStorageData()
-
-        document.cookie = 'tune=' + result.data
-      } else {
-        $('.registersuccess__thanks')
-          .last()
-          .find('span')
-          .find('.small')
-          .hide()
-      }
-    }
-  })
-}
 
 getDate()
 
 $('#vote-thanks-success').hide();
 
-function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
-  console.log('voteForPost authToken')
-
-  console.log('authToken')
-  console.log(authToken)
-
-  $.ajax({
-    url:
-      'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes/' +
-      shortcode +
-      '/vote',
-    method: 'POST',
-    contentType: 'application/json',
-    data: {},
-    beforeSend: function (jqXHR) {
-      jqXHR.setRequestHeader('Authorization', authToken)
-    },
-    xhrFields: {
-      withCredentials: false
-    },
-    success: function (result) {
-      console.log('result', result)
-      if (result.data) {
-        console.log(result.data.isVotedByUser)
-        if (result.data.isVotedByUser) {
-          $('#vote-thanks').show();
-        }else {
-          $('#vote-thanks-success').show();
-          $('#finish-date')
-            .last()
-            .find('span')
-            .find('.small')
-            .text(convertUtcDate(result.data.contestFinishAt));
-          for (let i = 0; i < voteButtonIds.length; i++) {
-            $('#' + voteButtonIds[i]).hide()
-          }
-          $('.card-container').each(function() {
-            $(this).css('margin-bottom', '0')
-          });
-        } 
-
-        removeVotingLocalStorageData()
-
-        // if (!location.href.includes('login')) {
-        //   window.location = '/authorized-vote';
-        // }
-
-      }
-    }
-  })
-}
-
-function removeVotingLocalStorageData() {
-    document.cookie = 'voteShortCodes' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    document.cookie = 'selectedShortCodeForVoting' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
 
 var Webflow = Webflow || []
 Webflow.push(function () {
@@ -620,39 +680,7 @@ Webflow.push(function () {
 })
 
 $(document).ready(function () {
-  function startTimer() {
-    var getVal = $('#hidden-time').text()
 
-    if (getVal.length > 0) {
-      var countDownDate = new Date(getVal).getTime()
-      var x = setInterval(function () {
-        var now = new Date().getTime()
-        var distance = countDownDate - now
-        // var hours = parseInt((distance / (1000 * 60 * 60)) % 24)
-        var hours = parseInt(distance / (1000 * 60 * 60))
-        if (hours < 10) {
-          hours = '0' + hours
-        }
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-        if (minutes < 10) {
-          minutes = '0' + minutes
-        }
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000)
-        if (seconds < 10) {
-          seconds = '0' + seconds
-        }
-
-        if (document.getElementById('time')) {
-          document.getElementById('time').innerHTML =
-            hours + ':' + minutes + ':' + seconds
-          if (distance < 0) {
-            clearInterval(x)
-            document.getElementById('time').innerHTML = '00:00:00'
-          }
-        }
-      }, 1000)
-    }
-  }
 
   if ($('body.ranking-page').length > 0) {
     function getQuery(q) {
