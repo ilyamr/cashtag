@@ -19,6 +19,7 @@ function getCookie(name) {
   }
 }
 
+
 //token from cookie
 function getUserAuthToken() {
   return getCookie('Authorization');
@@ -63,7 +64,6 @@ function showUserNameInHeader() {
     })
   }
 }
-
 
 //get, actually sets date also, breaks S from solid
 function getDate(authToken) {
@@ -249,6 +249,16 @@ function startTimer() {
 }
 
 
+
+function removeParentClass(childSelector, parentClass){
+  console.log('removing ' + parentClass + ' from ' + childSelector);
+  
+  $(childSelector).parent().removeClass(parentClass);
+}
+
+
+
+
 //tags click scroll
   $("#bronze-tag").click(function () {
     $([document.documentElement, document.body]).animate({
@@ -404,12 +414,15 @@ getDate()
 
 $('#vote-thanks-success').hide();
 
-
 // add custom code to webflow
 var Webflow = Webflow || []
+
+
 Webflow.push(function () {
 
   $('#wf-form-HomeReg').submit(function (evt) {
+    removeParentClass('#wf-form-HomeReg', 'w-form')
+
     evt.preventDefault()
     var name = $('#home-name-input').val()
     location.replace('/register?name=' + name)
@@ -417,21 +430,26 @@ Webflow.push(function () {
 
   assignVoteButtonClickEvents(voteButtonIds);
 
+// $('#register-wrapper').removeClass('w-form');
+
   //prevent form submissions
   $('#email-form').submit(function (evt) {
+    removeParentClass('#email-form', 'w-form')
+
     evt.preventDefault();
     $('#email-form').hide();
     $('#contact-success').show();
   })
-
 // login logic
   $('#wf-form-Login').submit(function (evt) {
+    removeParentClass('#wf-form-Login', 'w-form')
     evt.preventDefault()
     $('#register-submit').val('Please wait...')
     $('#register-error')
       .text('')
       .hide()
-    var phone = $('#register-phone-input').val()
+    var phone = $('#register-phone-input').val().includes('(') ? $('#register-phone-input').val().match(/\d/g).join('') : $('#register-phone-input').val()
+    console.log('phone', phone)
     document.cookie = 'phone=' + phone;
     var sendData = {
       phone: phone
@@ -445,6 +463,7 @@ Webflow.push(function () {
       contentType: 'application/json',
       data: sendData,
       success: function (result) {
+        console.log(result);
         if (result.data && result.data.codeSent) {
           $('.register__enter')
             .children('span')
@@ -465,6 +484,9 @@ Webflow.push(function () {
 
   // custom register form logic
   $('#wf-form-Register').submit(function (evt) {
+    
+    removeParentClass('#wf-form-Register', 'w-form')
+
     evt.preventDefault()
     var name = $('#register-name-input').val()
     var phone = $('#register-phone-input').val()
@@ -509,6 +531,8 @@ Webflow.push(function () {
 
   // register confirm number logic
   $('#wf-form-register-Confirm').submit(function (evt) {
+    removeParentClass('#wf-form-register-Confirm', 'w-form')
+
     evt.preventDefault()
     $('#confirm-submit').val('Please wait...')
     $('#confirm-error')
@@ -579,6 +603,7 @@ Webflow.push(function () {
 
   //confirm number on login page logic
   $('#wf-form-Confirm').submit(function (evt) {
+    removeParentClass('#wf-form-Confirm', 'w-form')
     evt.preventDefault()
     $('#confirm-submit').val('Please wait...')
     $('#confirm-error')
@@ -782,7 +807,7 @@ $(document).ready(function () {
         }
       }
     })
-
+$('#finished-title').hide();
     //get vote posts
     var votesShortcode = ''
     function getVotePosts() {
@@ -882,7 +907,14 @@ $(document).ready(function () {
 //                     containerWidth = '300px';
 //                     break;
 //                 }
-
+                
+                  if ($state.voteStatus === 'waiting') {
+                    $('#deadline-passed').show();
+                    $('#judged').hide();
+                    $('#finish-date').hide();
+                    $('#deadline').remove();
+                    $('#deadline-container').remove();
+                }
 
                 if ($state.voteStatus !== 'disabled') {
                   console.log('$state.voteStatus');
@@ -924,9 +956,15 @@ $(document).ready(function () {
                   //     '</div></div></div></a></div>'
                   //   )
                   // } else {
+                  if ($state.voteStatus !== 'finished' && $state.voteStatus !== 'waiting') {
                     $('#votes-title1').fadeIn(500).css({
                       display: 'flex',
                     })
+                  }
+                  if ($state.voteStatus === 'finished' || $state.voteStatus === 'waiting') {
+                    $('#votes-title1').hide();
+                    $('#deadline-2').hide();
+                  }
                     $('#votes-title2').fadeIn(500).css({
                       display: 'flex',
                     })
@@ -939,28 +977,55 @@ $(document).ready(function () {
                     
 
                     //append vote card to it's parent
-
+                    console.log( $state.voteStatus)
 
                     let instacardClass = 'instacard'
-
+                    
+                    if ($state.voteStatus === 'waiting') {
+                        $('#title-waiting').show();
+                    }
+// 
                     if($state.voteStatus === 'finished') {
-                      instacardClass += ' instacard--bordered'
+                      instacardClass += ' instacard--bordered';
+                      var percentClass = 'percent-silver'
 
                       switch(votePosts[i].votesLevel){
                         case 1:
-                          instacardClass += ' instacard--bordered-bronze'
+                          instacardClass += ' instacard--bordered-bronze';
+                          percentClass = 'percent-bronze'
                           break;
                         case 3:
-                        instacardClass += ' instacard--bordered-gold instacard--large'
+                          instacardClass += ' instacard--bordered-gold instacard--large';
+                          percentClass = 'percent-gold'
                           break;
                         default:
                             break;
                           }
+                      function finshedTitleDisplay() {
+                        if (window.innerWidth < 768) {
+                          $('#finished-title').css('display', 'block');
+                        } else {
+                          $('#finished-title').css('display', 'flex');
+                        }
+                      }
+                      finshedTitleDisplay();
+                      window.onresize = finshedTitleDisplay;
+                      $('#votes-title1').css('display', 'none');
+                      $('#deadline-2').hide();
                     }
-
-                    let voteButtonMarkup = $state.voteStatus === 'active' ? 
-                    `<a href='#' class='winform__submit winform__submitvote w-button' id=submit-vote-${++i}>VOTE NOW!</a>` : '';
-
+// 
+                    let voteButtonMarkup;   
+                    switch($state.voteStatus) {
+                      case 'active' :
+                        voteButtonMarkup = `<a href='#' class='winform__submit winform__submitvote w-button' id=submit-vote-${++i}>VOTE NOW!</a>`;
+                        break;
+                      case 'finished' :
+                        voteButtonMarkup = `<p class=${percentClass}>${votePosts[i].votesCountPercent}%</p>`;
+                        break;
+                      default :
+                        voteButtonMarkup = '';
+                        break;
+                    }
                     
                     $('#votes-tag-top').append(
                       '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="' + instacardClass + '" href="' +
@@ -997,6 +1062,7 @@ $(document).ready(function () {
               for (let i = 0; i < voteButtonIds.length; i++) {
                 $('#' + voteButtonIds[i]).hide()
               }
+              $('#vote-thanks').show();
             }
 
             assignVoteButtonClickEvents(voteButtonIds);
