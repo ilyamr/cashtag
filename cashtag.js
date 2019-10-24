@@ -98,7 +98,8 @@ function getDate(authToken) {
           .text(convertUtcDate(result.data))
         $('#tune-3')
           .text(convertUtcDate(result.data));
-        $('#deadline-2').show();
+          $('#deadline').show();
+          $('#deadline-2').show();
 
         removeCookieData()
 
@@ -180,6 +181,7 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
           $('#vote-thanks').show();
         }else {
           $('#vote-thanks-success').show();
+        $('#deadline').fadeIn(500)
           $('#finish-date')
             .last()
             .find('span')
@@ -247,8 +249,6 @@ function startTimer() {
 }
 
 
-
-
 //tags click scroll
   $("#bronze-tag").click(function () {
     $([document.documentElement, document.body]).animate({
@@ -285,6 +285,19 @@ if ($('#login-link').text().length > 20) {
 
 //
 var voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3']
+
+
+//define global state object
+$state = {};
+
+$state.voteButtonIds = ['submit-vote-1', 'submit-vote-2', 'submit-vote-3'];
+
+$state.mapInstacardClassToVoteStatuses = {
+  'disabled': 'instacard',
+  'active': 'instacard',
+  'waiting': 'instacard',
+  'finished': 'instacard',
+}
 
 
 //phone validation
@@ -383,8 +396,6 @@ if (getUserAuthToken() !== undefined && getCookie('username') === 'undefined') {
 
 
 
-$('#deadline').hide()
-
 //replaces deadline date on homepage
 getDeadlineDate()
 
@@ -406,12 +417,14 @@ Webflow.push(function () {
 
   assignVoteButtonClickEvents(voteButtonIds);
 
+  //prevent form submissions
   $('#email-form').submit(function (evt) {
     evt.preventDefault();
     $('#email-form').hide();
     $('#contact-success').show();
   })
 
+// login logic
   $('#wf-form-Login').submit(function (evt) {
     evt.preventDefault()
     $('#register-submit').val('Please wait...')
@@ -450,6 +463,7 @@ Webflow.push(function () {
     })
   })
 
+  // custom register form logic
   $('#wf-form-Register').submit(function (evt) {
     evt.preventDefault()
     var name = $('#register-name-input').val()
@@ -493,6 +507,7 @@ Webflow.push(function () {
     }
   })
 
+  // register confirm number logic
   $('#wf-form-register-Confirm').submit(function (evt) {
     evt.preventDefault()
     $('#confirm-submit').val('Please wait...')
@@ -562,6 +577,7 @@ Webflow.push(function () {
     })
   })
 
+  //confirm number on login page logic
   $('#wf-form-Confirm').submit(function (evt) {
     evt.preventDefault()
     $('#confirm-submit').val('Please wait...')
@@ -630,6 +646,7 @@ Webflow.push(function () {
     })
   })
 
+  //resend code logic
   $('#register-resend').click(function () {
     $('#confirm-error')
       .text('')
@@ -673,6 +690,7 @@ Webflow.push(function () {
 $(document).ready(function () {
 
 
+  //ranking section, don't need it for now
   if ($('body.ranking-page').length > 0) {
     function getQuery(q) {
       var query = window.location.search.substring(1)
@@ -747,6 +765,8 @@ $(document).ready(function () {
   
   $('#vote-thanks').hide();
 
+
+  // active contests request
   if ($('body.index-page').length > 0) {
     $.ajax({
       url:
@@ -763,6 +783,7 @@ $(document).ready(function () {
       }
     })
 
+    //get vote posts
     var votesShortcode = ''
     function getVotePosts() {
       $.ajax({
@@ -770,6 +791,9 @@ $(document).ready(function () {
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/votes',
         headers: { Authorization: getUserAuthToken() },
         success: function (result) {
+
+          $state.voteStatus = result.data.state;
+
           var votePosts = result.data.posts
           console.log(result.data)
 
@@ -796,6 +820,7 @@ $(document).ready(function () {
 
             function showTopPosts() {
               $.each(votePosts, function (i, e) {
+
                 var description = $($.parseHTML(votePosts[i].description))
                   .text()
                   .split(' ')
@@ -825,6 +850,9 @@ $(document).ready(function () {
                   var avatar =
                     'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
+
+                //vote percent logic, in progress
+
 //                 var percent = votePosts[i].votesCount * 100 / (votePosts[0].votesCount + votePosts[1].votesCount + votePosts[2].votesCount);
                 
 //                 var place = 3;
@@ -900,8 +928,15 @@ $(document).ready(function () {
                       'flex-wrap': 'wrap',
                       'justify-content': 'space-around'
                     })
+
+
+                    let className = getInstaCardClassNameByVoteStatus($state.voteStatus);
+
+
+                    //append vote card to it's parent
+
                     $('#votes-tag-top').append(
-                      '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="instacard" href="' +
+                      '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="instacard instacard instacard--bordered" href="' +
                       url +
                       '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
                       avatar +
@@ -942,7 +977,10 @@ $(document).ready(function () {
     }
     // window.shortcodes1.length === 0 ? `&last_shortcode=${last_shortcode1}` : `&exclude=${window.shortcodes1.join(',')}` 
 
+
     getVotePosts()
+
+    // get top posts for each of 3 tags. Code is repeated which is very bad
     window.shortcodes1 = [];
     window.shortcodes2 = [];
     window.shortcodes3 = [];
