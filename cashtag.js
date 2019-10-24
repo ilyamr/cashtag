@@ -99,7 +99,7 @@ function getDate(authToken) {
         $('#tune-3')
           .text(convertUtcDate(result.data));
           $('#deadline').show();
-          $('#deadline-2').show();
+          //$('#deadline-2').show();
 
         removeCookieData()
 
@@ -794,7 +794,7 @@ $(document).ready(function () {
 
           $state.voteStatus = result.data.state;
 
-          var votePosts = result.data.posts
+          let votePosts = result.data.posts
           console.log(result.data)
 
           let voted = false
@@ -883,7 +883,14 @@ $(document).ready(function () {
 //                     break;
 //                 }
 
-                if (result.data.isVoteEnabled) {
+
+                if ($state.voteStatus !== 'disabled') {
+                  console.log('$state.voteStatus');
+                  console.log($state.voteStatus);
+
+                  $('#deadline-2').show();
+
+
                     $('#votes-tag-top .loadingposts').remove()
                   
                   let today = new Date();
@@ -929,14 +936,34 @@ $(document).ready(function () {
                       'justify-content': 'space-around'
                     })
 
-
-                    let className = getInstaCardClassNameByVoteStatus($state.voteStatus);
-
+                    
 
                     //append vote card to it's parent
 
+
+                    let instacardClass = 'instacard'
+
+                    if($state.voteStatus === 'finished') {
+                      instacardClass += ' instacard--bordered'
+
+                      switch(votePosts[i].votesLevel){
+                        case 1:
+                          instacardClass += ' instacard--bordered-bronze'
+                          break;
+                        case 3:
+                        instacardClass += ' instacard--bordered-gold instacard--large'
+                          break;
+                        default:
+                            break;
+                          }
+                    }
+
+                    let voteButtonMarkup = $state.voteStatus === 'active' ? 
+                    `<a href='#' class='winform__submit winform__submitvote w-button' id=submit-vote-${++i}>VOTE NOW!</a>` : '';
+
+                    
                     $('#votes-tag-top').append(
-                      '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="instacard instacard instacard--bordered" href="' +
+                      '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="' + instacardClass + '" href="' +
                       url +
                       '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
                       avatar +
@@ -948,8 +975,10 @@ $(document).ready(function () {
                       photo2 +
                       ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
                       likes +
+
                       '</div></div></div></a>' +
-                      `<a href='#' class='winform__submit winform__submitvote w-button' id=submit-vote-${++i}>SUBMIT MY VOTE</a>` +
+                      voteButtonMarkup +
+                      
                       '</div>'
                     )
                   // } 
