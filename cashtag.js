@@ -98,10 +98,8 @@ function getDate(authToken) {
           .text(convertUtcDate(result.data))
         $('#tune-3')
           .text(convertUtcDate(result.data));
-          $('#deadline').show();
+         // $('#deadline').show();
           //$('#deadline-2').show();
-
-        removeCookieData()
 
         document.cookie = 'tune=' + result.data
       } else {
@@ -142,10 +140,20 @@ function getDeadlineDate() {
       if (result.data) {
         console.log('contests/end')
         console.log(result.data)
+        
+        $('#judged').fadeIn(500);
         $('#deadline').fadeIn(500)
+        
+        $('#deadline-container').fadeIn(500);  
+        
+        
         $('#finish-date')
           .fadeIn(500)
           .text(convertUtcDate(result.data))
+      }
+      
+      else {
+  
       }
     }
   })
@@ -181,7 +189,6 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
           $('#vote-thanks').show();
         }else {
           $('#vote-thanks-success').show();
-        $('#deadline').fadeIn(500)
           $('#finish-date')
             .last()
             .find('span')
@@ -257,6 +264,16 @@ function removeParentClass(childSelector, parentClass){
 }
 
 
+ function showSubmissionDeadlinePassedCopy(){
+    if($state.voteStatus === 'active' && $state.activeContestStatus === 'noActiveContests') {
+      $('#deadline-passed').hide();
+      return;
+    }
+   else if($state.voteStatus === 'disabled' && $state.activeContestStatus === 'noActiveContests') {
+     $('#deadline-passed').fadeIn(500);
+     return;
+   }
+  }
 
 
 //tags click scroll
@@ -789,6 +806,7 @@ $(document).ready(function () {
   }
   
   $('#vote-thanks').hide();
+  
 
 
   // active contests request
@@ -797,6 +815,18 @@ $(document).ready(function () {
       url:
         'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/contests/active',
       success: function (result) {
+        
+        if(result.data.length === 0) {
+          
+          $state.activeContestStatus = 'noActiveContests';
+          
+          console.log('$state.activeContestStatus = noActiveContests 823')
+          console.log($state.activeContestStatus)
+                    
+          showSubmissionDeadlinePassedCopy();
+        }
+        
+        
         let response = result.data
         response.sort((a, b) =>
           a.finishAt < b.finishAt ? 1 : b.finishAt < a.finishAt ? -1 : 0
@@ -818,8 +848,13 @@ $('#finished-title').hide();
         success: function (result) {
 
           $state.voteStatus = result.data.state;
+          
+          console.log('$state.voteStatus = result.data.state 852;');
+          console.log($state.voteStatus)
+          
+          showSubmissionDeadlinePassedCopy();
 
-          let votePosts = result.data.posts
+          var votePosts = result.data.posts
           console.log(result.data)
 
           let voted = false
@@ -907,14 +942,7 @@ $('#finished-title').hide();
 //                     containerWidth = '300px';
 //                     break;
 //                 }
-                
-                  if ($state.voteStatus === 'waiting') {
-                    $('#deadline-passed').show();
-                    $('#judged').hide();
-                    $('#finish-date').hide();
-                    $('#deadline').remove();
-                    $('#deadline-container').remove();
-                }
+   
 
                 if ($state.voteStatus !== 'disabled') {
                   console.log('$state.voteStatus');
@@ -974,7 +1002,6 @@ $('#finished-title').hide();
                       'justify-content': 'space-around'
                     })
 
-                    
 
                     //append vote card to it's parent
                     console.log( $state.voteStatus)
@@ -1026,26 +1053,96 @@ $('#finished-title').hide();
                         voteButtonMarkup = '';
                         break;
                     }
-                    
-                    $('#votes-tag-top').append(
-                      '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="' + instacardClass + '" href="' +
-                      url +
-                      '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
-                      avatar +
-                      ')"></div><div class="instacard__name">' +
-                      username +
-                      '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
-                      photo +
-                      '), url(' +
-                      photo2 +
-                      ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
-                      likes +
+                  
+                  
+                  if($state.voteStatus === 'finished'){
+                  
 
-                      '</div></div></div></a>' +
-                      voteButtonMarkup +
-                      
-                      '</div>'
-                    )
+                      if ($(window).width() > 700) {
+                        $('#votes-tag-top').append(
+                          '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="' + instacardClass + '" href="' +
+                          url +
+                          '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
+                          avatar +
+                          ')"></div><div class="instacard__name">' +
+                          username +
+                          '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                          photo +
+                          '), url(' +
+                          photo2 +
+                          ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
+                          likes +
+
+                          '</div></div></div></a>' +
+                          voteButtonMarkup +
+
+                          '</div>'
+                        )
+                    }
+                    else {
+                      console.log('votePosts[i].votesLevel === 3');
+                      console.log(votePosts[i]);
+
+                      console.log('$state.voteStatus ');
+                      console.log($state.voteStatus, i);
+
+                      //winner has always id 1
+                      if(i===1) {
+                        $('#votes-tag-top').append(
+                          '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="' + instacardClass + '" href="' +
+                          url +
+                          '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
+                          avatar +
+                          ')"></div><div class="instacard__name">' +
+                          username +
+                          '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                          photo +
+                          '), url(' +
+                          photo2 +
+                          ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
+                          likes +
+
+                          '</div></div></div></a>' +
+                          voteButtonMarkup +
+
+                          '</div>'
+                        )
+                      }
+                    }
+
+                  
+                  }
+                  
+                  else {
+                        $('#votes-tag-top').append(
+                          '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;"><a class="' + instacardClass + '" href="' +
+                          url +
+                          '" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
+                          avatar +
+                          ')"></div><div class="instacard__name">' +
+                          username +
+                          '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                          photo +
+                          '), url(' +
+                          photo2 +
+                          ');"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
+                          likes +
+
+                          '</div></div></div></a>' +
+                          voteButtonMarkup +
+
+                          '</div>'
+                        )
+                    
+                  }
+                  
+                  
+                  
+
+
+
+
+
                   // } 
                  }
 
