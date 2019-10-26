@@ -188,6 +188,13 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
         if (result.data.isVotedByUser) {
           $('#vote-thanks').show();
         }else {
+
+
+          if(window.ocation.href.includes('register') || window.ocation.href.includes('login')){
+            window.location.href = '/authorized-vote';
+          }
+
+
           $('#vote-thanks-success').show();
           $('#finish-date')
             .last()
@@ -498,13 +505,12 @@ Webflow.push(function () {
       }
     })
   })
-  var agreeTermsAndPolicy = false;
   $('#checkbox-agree').change(function() {
     // this will contain a reference to the checkbox   
     if (this.checked) {
-      agreeTermsAndPolicy = true;
+     $state.agreeTermsAndPolicy = true;
     } else {
-      agreeTermsAndPolicy = false;
+      $state.agreeTermsAndPolicy = false;
     }
   });
   // custom register form logic
@@ -532,7 +538,7 @@ Webflow.push(function () {
     }
     sendData = JSON.stringify(sendData)
     
-    if (reachedEighteen && agreeTermsAndPolicy) {
+    if (reachedEighteen && $state.agreeTermsAndPolicy) {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/signup',
@@ -1022,16 +1028,16 @@ $('#finished-title').hide();
                         $('#title-waiting').show();
                     }
 // 
+                    let percentClass = 'percent-silver'
                     if($state.voteStatus === 'finished') {
                       instacardClass += ' instacard--bordered';
-                      var percentClass = 'percent-silver'
                       console.log(votePosts[i].votesLevel)
-                      switch(votePosts[i].votesLevel){
-                        case 1:
+                      switch(i){
+                        case 2:
                           instacardClass += ' instacard--bordered-bronze';
                           percentClass = 'percent-bronze'
                           break;
-                        case 3:
+                        case 1:
                           instacardClass += ' instacard--bordered-gold instacard--large';
                           percentClass = 'percent-gold'
                           break;
@@ -1094,9 +1100,6 @@ $('#finished-title').hide();
                         )
                     }
                     else {
-                      console.log('votePosts[i].votesLevel === 3');
-                      console.log(votePosts[i]);
-
                       console.log('$state.voteStatus ');
                       console.log($state.voteStatus, i);
 
