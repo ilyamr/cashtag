@@ -498,7 +498,15 @@ Webflow.push(function () {
       }
     })
   })
-
+  var agreeTermsAndPolicy = false;
+  $('#checkbox-agree').change(function() {
+    // this will contain a reference to the checkbox   
+    if (this.checked) {
+      agreeTermsAndPolicy = true;
+    } else {
+      agreeTermsAndPolicy = false;
+    }
+  });
   // custom register form logic
   $('#wf-form-Register').submit(function (evt) {
     
@@ -507,6 +515,7 @@ Webflow.push(function () {
     evt.preventDefault()
     var name = $('#register-name-input').val()
     var phone = $('#register-phone-input').val()
+    var email = $('#register-e-mail').val()
     var age = $('#register-age').val()
     var zip = $('#register-zip').val()
     var firstName = $('#register-firstname').val()
@@ -518,11 +527,12 @@ Webflow.push(function () {
       age: age,
       zip: zip,
       firstName: firstName,
-      lastName: lastName
+      lastName: lastName,
+      email: email
     }
     sendData = JSON.stringify(sendData)
     
-    if (reachedEighteen) {
+    if (reachedEighteen && agreeTermsAndPolicy) {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/signup',
@@ -1015,7 +1025,7 @@ $('#finished-title').hide();
                     if($state.voteStatus === 'finished') {
                       instacardClass += ' instacard--bordered';
                       var percentClass = 'percent-silver'
-
+                      console.log(votePosts[i].votesLevel)
                       switch(votePosts[i].votesLevel){
                         case 1:
                           instacardClass += ' instacard--bordered-bronze';
@@ -1047,7 +1057,11 @@ $('#finished-title').hide();
                         voteButtonMarkup = `<a href='#' class='winform__submit winform__submitvote w-button' id=submit-vote-${++i}>VOTE NOW!</a>`;
                         break;
                       case 'finished' :
-                        voteButtonMarkup = `<p class=${percentClass}>${votePosts[i].votesCountPercent}%</p>`;
+                        if ($(window).width() > 768) {
+                          voteButtonMarkup = `<p class=${percentClass}>${votePosts[i].votesCountPercent}%</p>`;
+                        } else {
+                          voteButtonMarkup = '';
+                        }
                         break;
                       default :
                         voteButtonMarkup = '';
@@ -1159,6 +1173,9 @@ $('#finished-title').hide();
               for (let i = 0; i < voteButtonIds.length; i++) {
                 $('#' + voteButtonIds[i]).hide()
               }
+            }
+            
+            if (voted && $state.voteStatus !== 'disabled') {
               $('#vote-thanks').show();
             }
 
