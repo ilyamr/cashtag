@@ -60,6 +60,9 @@ function showUserNameInHeader() {
 
       replaceLink($('#login-link'), 'LOG IN', '/login')
       replaceLink($('#register-link'), 'REGISTER', '/register')
+
+      removeCookieData();
+
       location.reload(true)
     })
   }
