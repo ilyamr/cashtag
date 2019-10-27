@@ -306,6 +306,9 @@ function removeParentClass(childSelector, parentClass){
 // $('.w-container ').css('max-width', '1115px');
 
 
+$('#judged').hide();
+
+
 //show burger menu when long header text breaks the header
 if ($('#login-link').text().length > 20) {
   $('.navigation__menu').hide()
@@ -495,11 +498,13 @@ Webflow.push(function () {
           $('#register-wrapper').hide()
           $('#confirm-wrapper').show()
           $('#register-submit').val('Submit')
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
         }
         if (result.error) {
           $('#register-error').text(result.message)
           $('#register-error').show()
           $('#register-submit').val('Submit')
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
         }
       }
     })
@@ -554,11 +559,13 @@ Webflow.push(function () {
             $('#register-wrapper').hide()
             $('#confirm-wrapper').show()
             $('#register-submit').val('Submit')
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
           }
           if (result.error) {
             $('#register-error').text(result.message)
             $('#register-error').show()
             $('#register-submit').val('Submit')
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
           }
         }
       })
@@ -623,15 +630,18 @@ Webflow.push(function () {
           }
           $('#success-wrapper').show()
           $('#confirm-submit').val('Confirm')
-        } else if (result.data && !result.data.user.verified) {
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
+          } else if (result.data && !result.data.user.verified) {
           $('#confirm-error').text('you did not pass the verification')
           $('#confirm-error').show()
           $('#confirm-submit').val('Confirm')
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
         }
         if (result.error) {
           $('#confirm-error').text(result.message)
           $('#confirm-error').show()
           $('#confirm-submit').val('Confirm')
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
         }
       }
     })
@@ -693,15 +703,18 @@ Webflow.push(function () {
           }
           $('#success-wrapper').show()
           $('#confirm-submit').val('Confirm')
-        } else if (result.data && !result.data.user.verified) {
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
+          } else if (result.data && !result.data.user.verified) {
           $('#confirm-error').text('you did not pass the verification')
           $('#confirm-error').show()
           $('#confirm-submit').val('Confirm')
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
         }
         if (result.error) {
           $('#confirm-error').text(result.message)
           $('#confirm-error').show()
           $('#confirm-submit').val('Confirm')
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
         }
       }
     })
@@ -749,6 +762,10 @@ Webflow.push(function () {
 })
 
 $(document).ready(function () {
+  
+    if ($('#wf-form-Register')) {
+      $('#register-name-input').val((location.search.split('name=')[1] || '').split('&')[0]);
+    }
 
 
   //ranking section, don't need it for now
@@ -973,7 +990,11 @@ $('#finished-title').hide();
                     }
 // 
                     let percentClass = 'percent-silver'
+
                     if($state.voteStatus === 'finished') {
+
+                      $('#next-contest-start').fadeIn(500)
+
                       instacardClass += ' instacard--bordered';
                       console.log(votePosts[i].votesLevel)
                       switch(i){
