@@ -185,14 +185,15 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
       console.log('result', result)
       if (result.data) {
         console.log(result.data.isVotedByUser)
-        if (result.data.isVotedByUser) {
+        if (result.data.isVotedByUser && $state.voteStatus === 'active') {
           $('#vote-thanks').show();
         }else {
 
+          removeCookieData()
 
-          if(window.ocation.href.includes('register') || window.ocation.href.includes('login')){
+          // if(window.location.href.includes('register') || window.location.href.includes('login')){
             window.location.href = '/authorized-vote';
-          }
+          // }
 
 
           $('#vote-thanks-success').show();
@@ -209,7 +210,6 @@ function voteForPost(shortcode, shouldShowAlerts = false, authToken) {
           });
         } 
 
-        removeCookieData()
 
         // if (!location.href.includes('login')) {
         //   window.location = '/authorized-vote';
@@ -369,7 +369,6 @@ $('#register-phone-input').on('input', function (e) {
 })
 
 //age input validation
-var reachedEighteen = false;
 $('#register-age').on('input', function (e) {
   $('#register-age').val(
     $('#register-age')
@@ -381,12 +380,12 @@ $('#register-age').on('input', function (e) {
     $('#register-age').addClass("input-error");
     $('#age-prevent').hide();
     $('#input-error-message').show();
-    reachedEighteen = false;
+    $state.reachedEighteen = false;
   } else if ($('#register-age').val() >= 18) {
     $('#register-age').removeClass("input-error");
     $('#age-prevent').show();
     $('#input-error-message').hide();
-    reachedEighteen = true;
+    $state.reachedEighteen = true;
   }
 })
 
@@ -537,8 +536,12 @@ Webflow.push(function () {
       email: email
     }
     sendData = JSON.stringify(sendData)
+
+    if(!$state.agreeTermsAndPolicy) {
+      $('#agreement-section').css({'border': '1px solid red', 'border-radius': '8px'})
+    }
     
-    if (reachedEighteen && $state.agreeTermsAndPolicy) {
+    if ($state.reachedEighteen && $state.agreeTermsAndPolicy) {
       $.ajax({
         url:
           'https://1y2im047b7.execute-api.us-east-2.amazonaws.com/stage/users/signup',
@@ -927,38 +930,7 @@ $('#finished-title').hide();
                     'https://uploads-ssl.webflow.com/5c5ac1c89abbac627723a069/5c6fd9796978d23bee8b4216_avatar_und.jpg'
                 }
 
-                //vote percent logic, in progress
-
-//                 var percent = votePosts[i].votesCount * 100 / (votePosts[0].votesCount + votePosts[1].votesCount + votePosts[2].votesCount);
-                
-//                 var place = 3;
-//                 for (var j = 0; j < 3; j++) {
-//                   if (i === j) continue;
-//                   console.log(votePosts[i].votesCount, votePosts[j].votesCount)
-//                   if (votePosts[i].votesCount > votePosts[j].votesCount) {
-//                     place--;
-//                   }
-//                 }
-                
-//                 var picHeight, containerWidth, containerHeight
-//                 switch(place) {
-//                   case 3 :
-//                     picHeight = '260px';
-//                     containerHeight = '360px';
-//                     containerWidth = '280px';
-//                     break;
-//                   case 2 :
-//                     picHeight = '260px';
-//                     containerHeight = '360px'; 
-//                     containerWidth = '280px';
-//                     break;
-//                   case 1 :
-//                     picHeight = '300px';
-//                     containerHeight = '410px';
-//                     containerWidth = '300px';
-//                     break;
-//                 }
-   
+                //vote percent logic
 
                 if ($state.voteStatus !== 'disabled') {
                   console.log('$state.voteStatus');
@@ -971,35 +943,7 @@ $('#finished-title').hide();
                   
                   let today = new Date();
                   
-                  // if(true) {
-                  //   $('#votes-title1').fadeIn(500).css({
-                  //     display: 'flex',
-                  //   })
-                  //   $('#votes-title2').fadeIn(500).css({
-                  //     display: 'flex',
-                  //   })
-                  //   $('#votes-tag-top').css({
-                  //     display: 'flex',
-                  //     'flex-wrap': 'wrap',
-                  //     'justify-content': 'space-around',
-                  //     'align-items': 'center'
-                  //   })
-                  //   $('#votes-tag-top').append(
-                  //     '<div class="card-container" style="display:flex;flex-direction:column;align-items:center;"><a class="instacard" href="' +
-                  //     url +
-                  //     '" style="height:' + containerHeight + ';width:' + containerWidth + ';margin-bottom: 0;" target="_blank"><div class="instacard__top" style="display: flex; justify-content: space-between"><div style="display: flex;align-items: center;"><div class="instacard__avatar" style="background-image: url(' +
-                  //     avatar +
-                  //     ')"></div><div class="instacard__name">' +
-                  //     username +
-                  //     '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
-                  //     photo +
-                  //     '), url(' +
-                  //     photo2 +
-                  //     '); height:' + picHeight + ';"></div><div class="instacard__bottom" style="padding: 10px 8px 16px; height: auto"><div style="display: flex; justify-content: space-between"><div style="display: flex; margin-bottom: 5px;"><img src="https://svgshare.com/i/FTb.svg" style="height: 20px;margin:0 5px;"><img src="https://svgshare.com/i/FSN.svg" style="width: 20px;margin: 0 5px;"><img src="https://svgshare.com/i/FT3.svg" style="height: 20px;margin:0 5px;"></div><img src="https://svgshare.com/i/FTi.svg" style="height: 20px;margin:0 5px;"></div><div class="instacard__likes"><div class="instacard__likes-count">' +
-                  //     likes +
-                  //     '</div></div></div></a></div>'
-                  //   )
-                  // } else {
+      
                   if ($state.voteStatus !== 'finished' && $state.voteStatus !== 'waiting') {
                     $('#votes-title1').fadeIn(500).css({
                       display: 'flex',
@@ -1178,7 +1122,7 @@ $('#finished-title').hide();
               }
             }
             
-            if (voted && $state.voteStatus !== 'disabled') {
+            if (voted && $state.voteStatus === 'active') {
               $('#vote-thanks').show();
             }
 
