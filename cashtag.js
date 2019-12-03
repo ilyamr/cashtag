@@ -1054,7 +1054,7 @@ $('#finished-title').hide();
                           avatar +
                           ')"></div><div class="instacard__name">' +
                           username +
-                          '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                          '</div></div></div><div class="instacard__image" style="background-image: url(' +
                           photo +
                           '), url(' +
                           photo2 +
@@ -1080,7 +1080,7 @@ $('#finished-title').hide();
                           avatar +
                           ')"></div><div class="instacard__name">' +
                           username +
-                          '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                          '</div></div></div><div class="instacard__image" style="background-image: url(' +
                           photo +
                           '), url(' +
                           photo2 +
@@ -1106,7 +1106,7 @@ $('#finished-title').hide();
                           avatar +
                           ')"></div><div class="instacard__name">' +
                           username +
-                          '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                          '</div></div></div><div class="instacard__image" style="background-image: url(' +
                           photo +
                           '), url(' +
                           photo2 +
@@ -1226,7 +1226,7 @@ $('#finished-title').hide();
                   avatar +
                   ')"></div><div class="instacard__name">' +
                   username +
-                  '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                  '</div></div></div><div class="instacard__image" style="background-image: url(' +
                   photo +
                   '), url(' +
                   photo2 +
@@ -1321,7 +1321,7 @@ $('#finished-title').hide();
                   avatar +
                   ')"></div><div class="instacard__name">' +
                   username +
-                  '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                  '</div></div></div><div class="instacard__image" style="background-image: url(' +
                   photo +
                   '), url(' +
                   photo2 +
@@ -1418,7 +1418,7 @@ $('#finished-title').hide();
                   avatar +
                   ')"></div><div class="instacard__name">' +
                   username +
-                  '</div></div><img src="https://svgshare.com/i/FU3.svg" class="instacard__icon" style="width: 20px;margin: 0 5px ;"></div><div class="instacard__image" style="background-image: url(' +
+                  '</div></div></div><div class="instacard__image" style="background-image: url(' +
                   photo +
                   '), url(' +
                   photo2 +
